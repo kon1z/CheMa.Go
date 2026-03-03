@@ -45,6 +45,17 @@ namespace CheMa.Go.Blazor.Components.Pages
             PageLayout.ShowToolbar = true;
         }
 
+        private async Task SearchHotelsAsync()
+        {
+            await SearchEntitiesAsync();
+        }
+
+        private async Task ClearHotelSearchAsync()
+        {
+            GetListInput.Filter = null;
+            await SearchEntitiesAsync();
+        }
+
         /// <summary>
         /// 打开链接用户模态框
         /// </summary>

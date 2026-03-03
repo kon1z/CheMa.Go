@@ -19,15 +19,32 @@
             <Column ColumnSize="ColumnSize.IsAuto">
                 <h2>@L["Menu:HotelManagement"]</h2>
             </Column>
-            <Column ColumnSize="ColumnSize.IsAuto">
-                <Button Color="Color.Primary"
-                        Clicked="OpenCreateModalAsync">
-                    @L["New"]
-                </Button>
-            </Column>
         </Row>
     </CardHeader>
     <CardBody>
+        <Row Class="mb-3 g-2 align-items-end">
+            <Column ColumnSize="ColumnSize.Is4">
+                <Field>
+                    <FieldLabel>@L["HotelDto:Name"]</FieldLabel>
+                    <TextEdit @bind-Text="GetListInput.Filter"></TextEdit>
+                </Field>
+            </Column>
+            <Column ColumnSize="ColumnSize.Is4"></Column>
+            <Column ColumnSize="ColumnSize.Is4">
+                <div class="d-flex justify-content-end gap-2">
+                    <Button Color="Color.Primary" Clicked="OpenCreateModalAsync">
+                        @L["New"]
+                    </Button>
+                    <Button Color="Color.Primary" Clicked="SearchHotelsAsync">
+                        @L["Search"]
+                    </Button>
+                    <Button Color="Color.Secondary" Clicked="ClearHotelSearchAsync">
+                        @L["Clear"]
+                    </Button>
+                </div>
+            </Column>
+        </Row>
+
         <DataGrid TItem="HotelDto"
                   Data="Entities"
                   ReadData="OnDataGridReadAsync"

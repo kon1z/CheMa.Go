@@ -77,7 +77,14 @@ namespace CheMa.Go.Applications.AppServices
         protected override async Task<IQueryable<Hotel>> CreateFilteredQueryAsync(GetListHotelInput input)
         {
             var filteredQueryAsync = await base.CreateFilteredQueryAsync(input);
-            return filteredQueryAsync.Include(x => x.HotelUsers);
+            IQueryable<Hotel> query = filteredQueryAsync.Include(x => x.HotelUsers);
+
+            if (!string.IsNullOrWhiteSpace(input.Filter))
+            {
+                query = query.Where(x => x.Name.Contains(input.Filter!));
+            }
+
+            return query;
         }
     }
 }
