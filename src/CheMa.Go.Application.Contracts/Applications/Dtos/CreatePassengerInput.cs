@@ -8,18 +8,22 @@ public class CreatePassengerInput
     /// 乘客称呼
     /// </summary>
     public string Name { get; set; } = null!;
+
     /// <summary>
     /// 乘客联系方式
     /// </summary>
     public string Phone { get; set; } = null!;
+
     /// <summary>
     /// 乘客数量
     /// </summary>
     public int Count { get; set; }
+
     /// <summary>
     /// 预约时间
     /// </summary>
-    public DateTime AppointmentTime { get; set; }
+    public DateTime AppointmentTime { get; set; } = DateTime.Today;
+
     /// <summary>
     /// 备注
     /// </summary>

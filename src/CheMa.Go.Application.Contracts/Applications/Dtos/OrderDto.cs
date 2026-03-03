@@ -23,7 +23,7 @@ public class OrderDto : EntityDto<long>
     /// <summary>
     /// 乘客信息
     /// </summary>
-    public List<PassengerDto> PassengerInfos { get; set; } = null!;
+    public List<PassengerDto> PassengerInfos { get; set; } = new();
     /// <summary>
     /// 航班信息
     /// </summary>

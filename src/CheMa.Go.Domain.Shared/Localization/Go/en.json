@@ -2,8 +2,18 @@
   "Culture": "en",
   "Texts": {
     "AppName": "CheMaGo",
+    "Cancel": "Cancel",
+    "Clear": "Clear",
+    "Delete": "Delete",
+    "Edit": "Edit",
+    "InputNotFound": "'{0}' not found",
+    "LinkPassenger": "Link Passenger",
+    "LinkPassengersToOrderInput:PassengerIds": "Passengers",
     "Menu:Home": "Home",
     "Menu:OrderManagement": "Order List",
-    "Menu:VehicleManagement": "Vehicle List"
+    "Menu:VehicleManagement": "Vehicle List",
+    "New": "New",
+    "Save": "Save",
+    "Search": "Search"
   }
 }

@@ -5,9 +5,9 @@ using Volo.Abp.EntityFrameworkCore;
 
 namespace CheMa.Go.EntityFrameworkCore.Repositories
 {
-    public class OrderEfCoreRepository : EfCoreRepository<GoDbContext, Order, long>, IOrderRepository
+    public class EfCorePassengerHotelRepository : EfCoreRepository<GoDbContext, Passenger, long>, IPassengerRepository
     {
-        public OrderEfCoreRepository(IDbContextProvider<GoDbContext> dbContextProvider) : base(dbContextProvider)
+        public EfCorePassengerHotelRepository(IDbContextProvider<GoDbContext> dbContextProvider) : base(dbContextProvider)
         {
         }
     }

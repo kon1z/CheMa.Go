@@ -30,6 +30,8 @@
     "IdentityUserDto:UserName": "用户名称",
     "InputNotFound": "'{0}'不存在",
     "LinkUser": "绑定用户",
+    "LinkPassenger": "绑定乘客",
+    "LinkPassengersToOrderInput:PassengerIds": "所属乘客",
     "LinkUsersToHotelInput:UserIds": "所属用户",
     "Menu:Home": "首页",
     "Menu:HotelManagement": "酒店管理",

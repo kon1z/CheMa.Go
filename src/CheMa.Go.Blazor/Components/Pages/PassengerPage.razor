@@ -133,11 +133,14 @@
                     <Validation MessageLocalizer="@LH.Localize">
                         <Field>
                             <FieldLabel>@L["PassengerDto:AppointmentTime"]</FieldLabel>
-                            <TimePicker TValue="DateTime" InputMode="DateInputMode.DateTime" @bind-Time="@NewEntity.AppointmentTime">
+                            <DatePicker @bind-Date="NewEntity.AppointmentTime" 
+                                        InputMode="DateInputMode.DateTime" 
+                                        TimeAs24hr="true"
+                                        TValue="DateTime">
                                 <Feedback>
                                     <ValidationError />
                                 </Feedback>
-                            </TimePicker>
+                            </DatePicker>
                         </Field>
                     </Validation>
                     <Validation MessageLocalizer="@LH.Localize">
@@ -201,6 +204,16 @@
                                     <ValidationError />
                                 </Feedback>
                             </NumericEdit>
+                        </Field>
+                    </Validation>
+                    <Validation MessageLocalizer="@LH.Localize">
+                        <Field>
+                            <FieldLabel>@L["PassengerDto:AppointmentTime"]</FieldLabel>
+                            <DatePicker TValue="DateTime" @bind-Date="EditingEntity.AppointmentTime" InputMode="DateInputMode.DateTime" DisplayFormat="yyyy-MM-dd HH:mm">
+                                <Feedback>
+                                    <ValidationError />
+                                </Feedback>
+                            </DatePicker>
                         </Field>
                     </Validation>
                     <Validation MessageLocalizer="@LH.Localize">
