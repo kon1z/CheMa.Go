@@ -1,17 +1,10 @@
-﻿namespace CheMa.Go.Applications.Dtos;
+using Volo.Abp.Application.Dtos;
 
-public class GetListVehicleInput
+namespace CheMa.Go.Applications.Dtos;
+
+public class GetListVehicleInput : PagedAndSortedResultRequestDto
 {
-    /// <summary>
-    /// 车型名称
-    /// </summary>
-    public string Name { get; set; } = null!;
-    /// <summary>
-    /// 座位数
-    /// </summary>
-    public int SeatCount { get; set; }
-    /// <summary>
-    /// 车牌号
-    /// </summary>
-    public string LicenseNum { get; set; } = null!;
+    public string? LicenseNum { get; set; }
+    public int? SeatCount { get; set; }
+    public string? Name { get; set; }
 }

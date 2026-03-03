@@ -33,5 +33,27 @@ namespace CheMa.Go.Applications.AppServices
 
             return await base.CreateAsync(input);
         }
+
+        protected override async Task<IQueryable<Vehicle>> CreateFilteredQueryAsync(GetListVehicleInput input)
+        {
+            var query = await base.CreateFilteredQueryAsync(input);
+
+            if (!string.IsNullOrWhiteSpace(input.LicenseNum))
+            {
+                query = query.Where(x => x.LicenseNum.Contains(input.LicenseNum));
+            }
+
+            if (input.SeatCount.HasValue)
+            {
+                query = query.Where(x => x.SeatCount == input.SeatCount.Value);
+            }
+
+            if (!string.IsNullOrWhiteSpace(input.Name))
+            {
+                query = query.Where(x => x.Name.Contains(input.Name));
+            }
+
+            return query;
+        }
     }
 }
