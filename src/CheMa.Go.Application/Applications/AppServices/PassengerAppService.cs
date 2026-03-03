@@ -1,5 +1,7 @@
-﻿using CheMa.Go.Applications.Dtos;
+using CheMa.Go.Applications.Dtos;
 using CheMa.Go.Domain.Entities;
+using System.Linq;
+using System.Threading.Tasks;
 using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
 
@@ -12,6 +14,22 @@ namespace CheMa.Go.Applications.AppServices
         public PassengerAppService(IRepository<Passenger, long> repository) : base(repository)
         {
         }
+
+        protected override async Task<IQueryable<Passenger>> CreateFilteredQueryAsync(GetListPassengerInput input)
+        {
+            var query = await base.CreateFilteredQueryAsync(input);
+
+            if (!string.IsNullOrWhiteSpace(input.Name))
+            {
+                query = query.Where(x => x.Name.Contains(input.Name));
+            }
+
+            if (!string.IsNullOrWhiteSpace(input.Phone))
+            {
+                query = query.Where(x => x.Phone.Contains(input.Phone));
+            }
+
+            return query;
+        }
     }
 }
- 

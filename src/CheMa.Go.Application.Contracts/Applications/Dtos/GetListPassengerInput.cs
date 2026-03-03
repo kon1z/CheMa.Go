@@ -1,5 +1,9 @@
-﻿namespace CheMa.Go.Applications.Dtos;
+using Volo.Abp.Application.Dtos;
 
-public class GetListPassengerInput
+namespace CheMa.Go.Applications.Dtos;
+
+public class GetListPassengerInput : PagedAndSortedResultRequestDto
 {
+    public string? Name { get; set; }
+    public string? Phone { get; set; }
 }

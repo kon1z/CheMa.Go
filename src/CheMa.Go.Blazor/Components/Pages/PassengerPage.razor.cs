@@ -1,5 +1,6 @@
-﻿using CheMa.Go.Localization;
+using CheMa.Go.Localization;
 using Microsoft.AspNetCore.Components;
+using System.Threading.Tasks;
 
 namespace CheMa.Go.Blazor.Components.Pages
 {
@@ -16,6 +17,18 @@ namespace CheMa.Go.Blazor.Components.Pages
         protected override void Dispose(bool disposing)
         {
             PageLayout.ShowToolbar = true;
+        }
+
+        private async Task SearchPassengersAsync()
+        {
+            await SearchEntitiesAsync();
+        }
+
+        private async Task ClearPassengerSearchAsync()
+        {
+            GetListInput.Name = null;
+            GetListInput.Phone = null;
+            await SearchEntitiesAsync();
         }
     }
 }

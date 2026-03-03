@@ -1,4 +1,4 @@
-﻿@page "/passengers"
+@page "/passengers"
 @inherits AbpCrudPageBase<IPassengerAppService, PassengerDto, long, GetListPassengerInput, CreatePassengerInput, UpdatePassengerInput>
 @using CheMa.Go.Localization
 @using CheMa.Go.Applications.AppServices
@@ -18,15 +18,31 @@
             <Column ColumnSize="ColumnSize.IsAuto">
                 <h2>@L["Menu:PassengerManagement"]</h2>
             </Column>
-            <Column ColumnSize="ColumnSize.IsAuto">
-                <Button Color="Color.Primary"
-                        Clicked="OpenCreateModalAsync">
-                    @L["New"]
-                </Button>
-            </Column>
         </Row>
     </CardHeader>
     <CardBody>
+        <div class="mb-3 d-grid gap-2" style="grid-template-columns: repeat(3, minmax(0, 1fr));">
+            <Field>
+                <FieldLabel>@L["PassengerDto:Name"]</FieldLabel>
+                <TextEdit @bind-Text="GetListInput.Name"></TextEdit>
+            </Field>
+            <Field>
+                <FieldLabel>@L["PassengerDto:Phone"]</FieldLabel>
+                <TextEdit @bind-Text="GetListInput.Phone"></TextEdit>
+            </Field>
+            <div class="d-flex justify-content-end gap-2" style="align-self: end;">
+                <Button Color="Color.Primary" Clicked="OpenCreateModalAsync">
+                    @L["New"]
+                </Button>
+                <Button Color="Color.Primary" Clicked="SearchPassengersAsync">
+                    @L["Search"]
+                </Button>
+                <Button Color="Color.Secondary" Clicked="ClearPassengerSearchAsync">
+                    @L["Clear"]
+                </Button>
+            </div>
+        </div>
+
         <DataGrid TItem="PassengerDto"
                   Data="Entities"
                   ReadData="OnDataGridReadAsync"
@@ -43,7 +59,7 @@
                             <EntityAction TItem="PassengerDto"
                                           Text="@L["Delete"]"
                                           Clicked="() => DeleteEntityAsync(context)"
-                                          ConfirmationMessage="()=>GetDeleteConfirmationMessage(context)" />
+                                          ConfirmationMessage="() => GetDeleteConfirmationMessage(context)" />
                         </EntityActions>
                     </DisplayTemplate>
                 </DataGridEntityActionsColumn>
@@ -117,7 +133,7 @@
                     <Validation MessageLocalizer="@LH.Localize">
                         <Field>
                             <FieldLabel>@L["PassengerDto:AppointmentTime"]</FieldLabel>
-                            <TimePicker TValue="DateTime" InputMode="DateInputMode.DateTime" @bind-value="@NewEntity.AppointmentTime">
+                            <TimePicker TValue="DateTime" InputMode="DateInputMode.DateTime" @bind-Time="@NewEntity.AppointmentTime">
                                 <Feedback>
                                     <ValidationError />
                                 </Feedback>
@@ -148,7 +164,6 @@
     </ModalContent>
 </Modal>
 
-
 <Modal @ref="@EditModal">
     <ModalContent IsCentered="true">
         <Form>
@@ -160,7 +175,7 @@
                 <Validations @ref="@EditValidationsRef" Model="@EditingEntity" ValidateOnLoad="false">
                     <Validation MessageLocalizer="@LH.Localize">
                         <Field>
-                            <FieldLabel>@L["PassengerDto:LicenseNum"]</FieldLabel>
+                            <FieldLabel>@L["PassengerDto:Name"]</FieldLabel>
                             <TextEdit @bind-Text="@EditingEntity.Name">
                                 <Feedback>
                                     <ValidationError />
@@ -176,7 +191,6 @@
                                     <ValidationError />
                                 </Feedback>
                             </TextEdit>
-                          
                         </Field>
                     </Validation>
                     <Validation MessageLocalizer="@LH.Localize">
