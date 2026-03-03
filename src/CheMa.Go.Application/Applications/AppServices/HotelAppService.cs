@@ -1,0 +1,69 @@
+﻿using CheMa.Go.Applications.Dtos;
+using CheMa.Go.Domain.Entities;
+using CheMa.Go.Domain.Repositories;
+using Microsoft.AspNetCore.Authorization;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Cryptography.X509Certificates;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using Volo.Abp.Application.Dtos;
+using Volo.Abp.Application.Services;
+using Volo.Abp.Domain.Repositories;
+using Volo.Abp.Identity;
+
+namespace CheMa.Go.Applications.AppServices
+{
+    public class HotelAppService : CrudAppService<Hotel, HotelDto, long, GetListHotelInput, CreateHotelInput, UpdateHotelInput>, IHotelAppService
+    {
+        private readonly IHotelRepository _hotelRepository;
+        private readonly IIdentityUserRepository _identityUserRepository;
+
+        public HotelAppService(IRepository<Hotel, long> repository,
+            IHotelRepository hotelRepository,
+            IIdentityUserRepository identityUserRepository) 
+            : base(repository)
+        {
+            _hotelRepository = hotelRepository;
+            _identityUserRepository = identityUserRepository;
+        }
+
+        [Authorize]
+        public async Task<List<HotelDto>> GetCurrentUserBelongHotelAsync()
+        {
+            var hotels = await _hotelRepository.GetCurrentUserBelongHotelAsync(CurrentUser.Id);
+
+            return ObjectMapper.Map<List<Hotel>, List<HotelDto>>(hotels);
+        }
+
+        public async Task<HotelDto> GetListHotelUsersAsync(long hotelId)
+        {
+            var hotel = await _hotelRepository.GetAsync(hotelId);
+
+            return ObjectMapper.Map<Hotel, HotelDto>(hotel);
+        }
+
+        public async Task LinkUsersToHotelAsync(LinkUsersToHotelInput input)
+        {
+            var hotel = await _hotelRepository.GetAsync(input.HotelId);
+            var users = await _identityUserRepository.GetListByIdsAsync(input.UserIds);
+            foreach (var user in users)
+            {
+                hotel.HotelUsers.AddIfNotContains(user);
+            }
+        }
+
+        public async Task RemoteUserFromHotelAsync(long hotelId, Guid userId)
+        {
+            var identityUser = await _identityUserRepository.GetAsync(userId);
+            await _hotelRepository.RemoteUserFromHotelAsync(hotelId, identityUser);
+        }
+
+        protected override async Task<IQueryable<Hotel>> CreateFilteredQueryAsync(GetListHotelInput input)
+        {
+            var filteredQueryAsync = await base.CreateFilteredQueryAsync(input);
+            return filteredQueryAsync.Include(x => x.HotelUsers);
+        }
+    }
+}

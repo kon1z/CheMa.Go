@@ -1,0 +1,20 @@
+<Solution>
+    <Folder Name="/src/">
+        <Project Path="src/CheMa.Go.Domain/CheMa.Go.Domain.csproj" />
+        <Project Path="src/CheMa.Go.Application/CheMa.Go.Application.csproj" />
+        <Project Path="src/CheMa.Go.EntityFrameworkCore/CheMa.Go.EntityFrameworkCore.csproj" />
+        <Project Path="src/CheMa.Go.Domain.Shared/CheMa.Go.Domain.Shared.csproj" />
+        <Project Path="src/CheMa.Go.Application.Contracts/CheMa.Go.Application.Contracts.csproj" />
+        <Project Path="src/CheMa.Go.HttpApi/CheMa.Go.HttpApi.csproj" />
+        <Project Path="src/CheMa.Go.HttpApi.Client/CheMa.Go.HttpApi.Client.csproj" />
+        <Project Path="src/CheMa.Go.DbMigrator/CheMa.Go.DbMigrator.csproj" />
+        <Project Path="src/CheMa.Go.Blazor/CheMa.Go.Blazor.csproj" />
+    </Folder>
+    <Folder Name="/test/">
+        <Project Path="test/CheMa.Go.Application.Tests/CheMa.Go.Application.Tests.csproj" />
+        <Project Path="test/CheMa.Go.EntityFrameworkCore.Tests/CheMa.Go.EntityFrameworkCore.Tests.csproj" />
+        <Project Path="test/CheMa.Go.TestBase/CheMa.Go.TestBase.csproj" />
+        <Project Path="test/CheMa.Go.Domain.Tests/CheMa.Go.Domain.Tests.csproj" />
+        <Project Path="test/CheMa.Go.HttpApi.Client.ConsoleTestApp/CheMa.Go.HttpApi.Client.ConsoleTestApp.csproj" />
+    </Folder>
+</Solution>

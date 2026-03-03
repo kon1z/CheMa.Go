@@ -1,0 +1,56 @@
+{
+  "id": "6220e006-7b10-49b6-bc89-fed6a3c7adde",
+  "creationTime": "02/26/2026 13:15:49 +00:00",
+  "template": "app",
+  "versions": {
+    "AbpFramework": "10.1.0",
+    "AbpStudio": "2.2.1",
+    "TargetDotnetFramework": "net10.0"
+  },
+  "modules": {
+    "CheMa.Go": {
+      "path": "CheMa.Go.abpmdl"
+    }
+  },
+  "runProfiles": {
+    "Default": {
+      "path": "etc/abp-studio/run-profiles/Default.abprun.json"
+    }
+  },
+  "options": {
+    "httpRequests": {
+      "ignoredUrls": [
+      
+      ]
+    }
+  },
+  "creatingStudioConfiguration": {
+    "template": "app",
+    "createdAbpStudioVersion": "2.2.1",
+    "creationTool": "ABP Studio UI",
+    "tiered": "false",
+    "runInstallLibs": "",
+    "useLocalReferences": "false",
+    "multiTenancy": "true",
+    "includeTests": "true",
+    "kubernetesConfiguration": "false",
+    "uiFramework": "blazor-server",
+    "mobileFramework": "none",
+    "distributedEventBus": "none",
+    "databaseProvider": "ef",
+    "runDbMigrator": "",
+    "databaseManagementSystem": "postgresql",
+    "separateTenantSchema": "false",
+    "createInitialMigration": "",
+    "theme": "leptonx-lite",
+    "themeStyle": "",
+    "themeMenuPlacement": "",
+    "mobileFramework": "none",
+    "publicWebsite": "false",
+    "socialLogin": "false",
+    "sampleCrudPage": "false",
+    "selectedLanguages": ["Chinese (Simplified)", "English", ],
+    "defaultLanguage": "Chinese (Simplified)",
+    "createCommand": "abp new CheMa.Go -t app --ui-framework blazor-server --database-provider ef --database-management-system postgresql --theme leptonx-lite --skip-migration  --skip-migrator  --without-cms-kit --dont-run-install-libs --dont-run-bundling --no-social-logins -no-gdpr -no-openiddict-admin-ui -no-audit-logging -no-file-management -no-language-management -no-text-template-management"
+  }
+}

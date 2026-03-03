@@ -1,0 +1,126 @@
+﻿@page "/orders"
+@inherits AbpCrudPageBase<IOrderAppService, OrderDto, long, GetListOrderInput, CreateOrderInput, UpdateOrderInput>
+@using CheMa.Go.Localization
+@using CheMa.Go.Applications.AppServices
+@using CheMa.Go.Applications.Dtos
+@using CheMa.Go.Domain.Enums
+@using Volo.Abp.AspNetCore.Components.Web
+@using Volo.Abp.AspNetCore.Components.Web.Theming.Layout
+@inject PageLayout PageLayout
+@inject AbpBlazorMessageLocalizerHelper<GoResource> LH
+@{
+    PageLayout.Title = L["Menu:Home"];
+    PageLayout.ShowToolbar = false;
+}
+
+<Card>
+    <CardHeader>
+        <Row Class="justify-content-between">
+            <Column ColumnSize="ColumnSize.IsAuto">
+                <h2>@L["Menu:OrderManagement"]</h2>
+            </Column>
+            <Column ColumnSize="ColumnSize.IsAuto">
+                <Button Color="Color.Primary"
+                        Clicked="OpenCreateModalAsync">
+                    @L["New"]
+                </Button>
+            </Column>
+        </Row>
+    </CardHeader>
+    <CardBody>
+        <DataGrid TItem="OrderDto"
+                  Data="Entities"
+                  ReadData="OnDataGridReadAsync"
+                  TotalItems="TotalCount"
+                  ShowPager="true"
+                  PageSize="PageSize">
+            <DataGridColumns>
+                <DataGridEntityActionsColumn TItem="OrderDto" @ref="@EntityActionsColumn">
+                    <DisplayTemplate>
+                        <EntityActions TItem="OrderDto" EntityActionsColumn="@EntityActionsColumn">
+                            <EntityAction TItem="OrderDto"
+                                          Text="@L["Edit"]"
+                                          Clicked="() => OpenEditModalAsync(context)" />
+                            <EntityAction TItem="OrderDto"
+                                          Text="@L["Delete"]"
+                                          Clicked="() => DeleteEntityAsync(context)"
+                                          ConfirmationMessage="()=>GetDeleteConfirmationMessage(context)" />
+                        </EntityActions>
+                    </DisplayTemplate>
+                </DataGridEntityActionsColumn>
+                <DataGridColumn TItem="OrderDto"
+                                Field="@nameof(OrderDto.OrderType)"
+                                Caption="@L["OrderDto:OrderType"]">
+                    <DisplayTemplate>
+                        @L[$"Enum:OrderType.{context.OrderType:D}"]
+                    </DisplayTemplate>
+                </DataGridColumn>
+                <DataGridColumn TItem="OrderDto"
+                                Field="@nameof(OrderDto.OrderStatus)"
+                                Caption="@L["OrderDto:OrderStatus"]">
+                    <DisplayTemplate>
+                        @L[$"Enum:OrderStatus.{context.OrderStatus:D}"]
+                    </DisplayTemplate>
+                </DataGridColumn>
+                <DataGridColumn TItem="OrderDto"
+                                Field="@nameof(OrderDto.AppointmentTime)"
+                                Caption="@L["OrderDto:AppointmentTime"]">
+                    <DisplayTemplate>
+                        @context.AppointmentTime.ToString("G")
+                    </DisplayTemplate>
+                </DataGridColumn>
+                <DataGridColumn TItem="OrderDto"
+                                Field="@nameof(OrderDto.Vehicle.LicenseNum)"
+                                Caption="@L["VehicleDto:LicenseNum"]">
+                </DataGridColumn>
+                <DataGridColumn TItem="OrderDto"
+                                Field="@nameof(OrderDto.Vehicle.Name)"
+                                Caption="@L["VehicleDto:Name"]">
+                </DataGridColumn>
+                <DataGridColumn TItem="OrderDto"
+                                Field="@nameof(OrderDto.Vehicle.SeatCount)"
+                                Caption="@L["VehicleDto:SeatCount"]">
+                </DataGridColumn>
+            </DataGridColumns>
+        </DataGrid>
+    </CardBody>
+</Card>
+
+
+<Modal @ref="@CreateModal">
+    <ModalContent IsCentered="true">
+        <Form>
+            <ModalHeader>
+                <ModalTitle>@L["New"]</ModalTitle>
+                <CloseButton Clicked="CloseCreateModalAsync" />
+            </ModalHeader>
+            <ModalBody>
+                <Validations @ref="@CreateValidationsRef" Model="@NewEntity" ValidateOnLoad="false">
+                    <Field>
+                        <FieldLabel>@L["Type"]</FieldLabel>
+                        <Select TValue="OrderType" @bind-SelectedValue="@NewEntity.OrderType">
+                            @foreach (int orderType in Enum.GetValues(typeof(OrderType)))
+                            {
+                                <SelectItem TValue="OrderType" Value="@((OrderType)orderType)">
+                                    @L[$"Enum:OrderType.{orderType}"]
+                                </SelectItem>
+                            }
+                        </Select>
+                    </Field>
+                </Validations>
+            </ModalBody>
+            <ModalFooter>
+                <Button Color="Color.Secondary"
+                        Clicked="CloseCreateModalAsync">
+                    @L["Cancel"]
+                </Button>
+                <Button Color="Color.Primary"
+                        Type="@ButtonType.Submit"
+                        PreventDefaultOnSubmit="true"
+                        Clicked="CreateEntityAsync">
+                    @L["Save"]
+                </Button>
+            </ModalFooter>
+        </Form>
+    </ModalContent>
+</Modal>

@@ -1,0 +1,214 @@
+﻿@page "/passengers"
+@inherits AbpCrudPageBase<IPassengerAppService, PassengerDto, long, GetListPassengerInput, CreatePassengerInput, UpdatePassengerInput>
+@using CheMa.Go.Localization
+@using CheMa.Go.Applications.AppServices
+@using CheMa.Go.Applications.Dtos
+@using Volo.Abp.AspNetCore.Components.Web
+@using Volo.Abp.AspNetCore.Components.Web.Theming.Layout
+@inject PageLayout PageLayout
+@inject AbpBlazorMessageLocalizerHelper<GoResource> LH
+@{
+    PageLayout.Title = L["Menu:Home"];
+    PageLayout.ShowToolbar = false;
+}
+
+<Card>
+    <CardHeader>
+        <Row Class="justify-content-between">
+            <Column ColumnSize="ColumnSize.IsAuto">
+                <h2>@L["Menu:PassengerManagement"]</h2>
+            </Column>
+            <Column ColumnSize="ColumnSize.IsAuto">
+                <Button Color="Color.Primary"
+                        Clicked="OpenCreateModalAsync">
+                    @L["New"]
+                </Button>
+            </Column>
+        </Row>
+    </CardHeader>
+    <CardBody>
+        <DataGrid TItem="PassengerDto"
+                  Data="Entities"
+                  ReadData="OnDataGridReadAsync"
+                  TotalItems="TotalCount"
+                  ShowPager="true"
+                  PageSize="PageSize">
+            <DataGridColumns>
+                <DataGridEntityActionsColumn TItem="PassengerDto" @ref="@EntityActionsColumn">
+                    <DisplayTemplate>
+                        <EntityActions TItem="PassengerDto" EntityActionsColumn="@EntityActionsColumn">
+                            <EntityAction TItem="PassengerDto"
+                                          Text="@L["Edit"]"
+                                          Clicked="() => OpenEditModalAsync(context)" />
+                            <EntityAction TItem="PassengerDto"
+                                          Text="@L["Delete"]"
+                                          Clicked="() => DeleteEntityAsync(context)"
+                                          ConfirmationMessage="()=>GetDeleteConfirmationMessage(context)" />
+                        </EntityActions>
+                    </DisplayTemplate>
+                </DataGridEntityActionsColumn>
+                <DataGridColumn TItem="PassengerDto"
+                                Field="@nameof(PassengerDto.Name)"
+                                Caption="@L["PassengerDto:Name"]">
+                </DataGridColumn>
+                <DataGridColumn TItem="PassengerDto"
+                                Field="@nameof(PassengerDto.Phone)"
+                                Caption="@L["PassengerDto:Phone"]">
+                </DataGridColumn>
+                <DataGridColumn TItem="PassengerDto"
+                                Field="@nameof(PassengerDto.Count)"
+                                Caption="@L["PassengerDto:Count"]">
+                </DataGridColumn>
+                <DataGridColumn TItem="PassengerDto"
+                                Field="@nameof(PassengerDto.AppointmentTime)"
+                                Caption="@L["PassengerDto:AppointmentTime"]">
+                    <DisplayTemplate>
+                        @context.AppointmentTime.ToString("G")
+                    </DisplayTemplate>
+                </DataGridColumn>
+                <DataGridColumn TItem="PassengerDto"
+                                Field="@nameof(PassengerDto.Remark)"
+                                Caption="@L["PassengerDto:Remark"]">
+                </DataGridColumn>
+            </DataGridColumns>
+        </DataGrid>
+    </CardBody>
+</Card>
+
+<Modal @ref="@CreateModal">
+    <ModalContent IsCentered="true">
+        <Form>
+            <ModalHeader>
+                <ModalTitle>@L["New"]</ModalTitle>
+                <CloseButton Clicked="CloseCreateModalAsync" />
+            </ModalHeader>
+            <ModalBody>
+                <Validations @ref="@CreateValidationsRef" Model="@NewEntity" ValidateOnLoad="false">
+                    <Validation MessageLocalizer="@LH.Localize">
+                        <Field>
+                            <FieldLabel>@L["PassengerDto:Name"]</FieldLabel>
+                            <TextEdit @bind-Text="@NewEntity.Name">
+                                <Feedback>
+                                    <ValidationError />
+                                </Feedback>
+                            </TextEdit>
+                        </Field>
+                    </Validation>
+                    <Validation MessageLocalizer="@LH.Localize">
+                        <Field>
+                            <FieldLabel>@L["PassengerDto:Phone"]</FieldLabel>
+                            <TextEdit @bind-Text="@NewEntity.Phone">
+                                <Feedback>
+                                    <ValidationError />
+                                </Feedback>
+                            </TextEdit>
+                        </Field>
+                    </Validation>
+                    <Validation MessageLocalizer="@LH.Localize">
+                        <Field>
+                            <FieldLabel>@L["PassengerDto:Count"]</FieldLabel>
+                            <NumericEdit TValue="int" @bind-value="@NewEntity.Count">
+                                <Feedback>
+                                    <ValidationError />
+                                </Feedback>
+                            </NumericEdit>
+                        </Field>
+                    </Validation>
+                    <Validation MessageLocalizer="@LH.Localize">
+                        <Field>
+                            <FieldLabel>@L["PassengerDto:AppointmentTime"]</FieldLabel>
+                            <TimePicker TValue="DateTime" InputMode="DateInputMode.DateTime" @bind-value="@NewEntity.AppointmentTime">
+                                <Feedback>
+                                    <ValidationError />
+                                </Feedback>
+                            </TimePicker>
+                        </Field>
+                    </Validation>
+                    <Validation MessageLocalizer="@LH.Localize">
+                        <Field>
+                            <FieldLabel>@L["PassengerDto:Remark"]</FieldLabel>
+                            <MemoEdit @bind-Text="@NewEntity.Remark" AutoSize />
+                        </Field>
+                    </Validation>
+                </Validations>
+            </ModalBody>
+            <ModalFooter>
+                <Button Color="Color.Secondary"
+                        Clicked="CloseCreateModalAsync">
+                    @L["Cancel"]
+                </Button>
+                <Button Color="Color.Primary"
+                        Type="@ButtonType.Submit"
+                        PreventDefaultOnSubmit="true"
+                        Clicked="CreateEntityAsync">
+                    @L["Save"]
+                </Button>
+            </ModalFooter>
+        </Form>
+    </ModalContent>
+</Modal>
+
+
+<Modal @ref="@EditModal">
+    <ModalContent IsCentered="true">
+        <Form>
+            <ModalHeader>
+                <ModalTitle>@EditingEntity.Name</ModalTitle>
+                <CloseButton Clicked="CloseEditModalAsync" />
+            </ModalHeader>
+            <ModalBody>
+                <Validations @ref="@EditValidationsRef" Model="@EditingEntity" ValidateOnLoad="false">
+                    <Validation MessageLocalizer="@LH.Localize">
+                        <Field>
+                            <FieldLabel>@L["PassengerDto:LicenseNum"]</FieldLabel>
+                            <TextEdit @bind-Text="@EditingEntity.Name">
+                                <Feedback>
+                                    <ValidationError />
+                                </Feedback>
+                            </TextEdit>
+                        </Field>
+                    </Validation>
+                    <Validation MessageLocalizer="@LH.Localize">
+                        <Field>
+                            <FieldLabel>@L["PassengerDto:Phone"]</FieldLabel>
+                            <TextEdit @bind-Text="@EditingEntity.Phone">
+                                <Feedback>
+                                    <ValidationError />
+                                </Feedback>
+                            </TextEdit>
+                          
+                        </Field>
+                    </Validation>
+                    <Validation MessageLocalizer="@LH.Localize">
+                        <Field>
+                            <FieldLabel>@L["PassengerDto:Count"]</FieldLabel>
+                            <NumericEdit TValue="int" @bind-value="@EditingEntity.Count">
+                                <Feedback>
+                                    <ValidationError />
+                                </Feedback>
+                            </NumericEdit>
+                        </Field>
+                    </Validation>
+                    <Validation MessageLocalizer="@LH.Localize">
+                        <Field>
+                            <FieldLabel>@L["PassengerDto:Remark"]</FieldLabel>
+                            <MemoEdit @bind-Text="@EditingEntity.Remark" AutoSize />
+                        </Field>
+                    </Validation>
+                </Validations>
+            </ModalBody>
+            <ModalFooter>
+                <Button Color="Color.Secondary"
+                        Clicked="CloseEditModalAsync">
+                    @L["Cancel"]
+                </Button>
+                <Button Color="Color.Primary"
+                        Type="@ButtonType.Submit"
+                        PreventDefaultOnSubmit="true"
+                        Clicked="UpdateEntityAsync">
+                    @L["Save"]
+                </Button>
+            </ModalFooter>
+        </Form>
+    </ModalContent>
+</Modal>

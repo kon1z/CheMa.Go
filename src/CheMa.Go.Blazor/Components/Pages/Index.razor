@@ -1,0 +1,10 @@
+﻿@page "/"
+@inherits GoComponentBase
+@using Volo.Abp.AspNetCore.Components.Web.Theming.Layout
+@inject PageLayout PageLayout
+@{
+    PageLayout.Title = L["Menu:Home"];
+    PageLayout.ShowToolbar = false;
+}
+
+<h2>接机管理系统</h2>

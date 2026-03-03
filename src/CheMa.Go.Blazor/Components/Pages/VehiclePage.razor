@@ -1,0 +1,176 @@
+﻿@page "/vehicles"
+@using Volo.Abp.AspNetCore.Components.Web.Theming.Layout
+@using CheMa.Go.Applications.AppServices
+@using CheMa.Go.Applications.Dtos
+@using CheMa.Go.Localization
+@using Volo.Abp.AspNetCore.Components.Web
+@inject PageLayout PageLayout
+@inject AbpBlazorMessageLocalizerHelper<GoResource> LH
+@inherits AbpCrudPageBase<IVehicleAppServices, VehicleDto, long, GetListVehicleInput, CreateVehicleInput, UpdateVehicleInput>
+@{
+    PageLayout.Title = L["Menu:Home"];
+    PageLayout.ShowToolbar = false;
+}
+
+<Card>
+    <CardHeader>
+        <Row Class="justify-content-between">
+            <Column ColumnSize="ColumnSize.IsAuto">
+                <h2>@L["Menu:VehicleManagement"]</h2>
+            </Column>
+            <Column ColumnSize="ColumnSize.IsAuto">
+                <Button Color="Color.Primary"
+                        Clicked="OpenCreateModalAsync">
+                    @L["New"]
+                </Button>
+            </Column>
+        </Row>
+    </CardHeader>
+    <CardBody>
+        <DataGrid TItem="VehicleDto"
+                  Data="Entities"
+                  ReadData="OnDataGridReadAsync"
+                  TotalItems="TotalCount"
+                  ShowPager="true"
+                  PageSize="PageSize">
+            <DataGridColumns>
+                <DataGridEntityActionsColumn TItem="VehicleDto" @ref="@EntityActionsColumn">
+                    <DisplayTemplate>
+                        <EntityActions TItem="VehicleDto" EntityActionsColumn="@EntityActionsColumn">
+                            <EntityAction TItem="VehicleDto"
+                                          Text="@L["Edit"]"
+                                          Clicked="() => OpenEditModalAsync(context)"/>
+                            <EntityAction TItem="VehicleDto"
+                                          Text="@L["Delete"]"
+                                          Clicked="() => DeleteEntityAsync(context)"
+                                          ConfirmationMessage="() => GetDeleteConfirmationMessage(context)"/>
+                        </EntityActions>
+                    </DisplayTemplate>
+                </DataGridEntityActionsColumn>
+                <DataGridColumn TItem="VehicleDto"
+                                Field="@nameof(VehicleDto.LicenseNum)"
+                                Caption="@L["VehicleDto:LicenseNum"]">
+                </DataGridColumn>
+                <DataGridColumn TItem="VehicleDto"
+                                Field="@nameof(VehicleDto.SeatCount)"
+                                Caption="@L["VehicleDto:SeatCount"]">
+                </DataGridColumn>
+                <DataGridColumn TItem="VehicleDto"
+                                Field="@nameof(VehicleDto.Name)"
+                                Caption="@L["VehicleDto:Name"]">
+                </DataGridColumn>
+            </DataGridColumns>
+        </DataGrid>
+    </CardBody>
+</Card>
+
+<Modal @ref="@CreateModal">
+    <ModalContent IsCentered="true">
+        <Form>
+            <ModalHeader>
+                <ModalTitle>@L["New"]</ModalTitle>
+                <CloseButton Clicked="CloseCreateModalAsync" />
+            </ModalHeader>
+            <ModalBody>
+                <Validations @ref="@CreateValidationsRef" Model="@NewEntity" ValidateOnLoad="false">
+                    <Validation MessageLocalizer="@LH.Localize">
+                        <Field>
+                            <FieldLabel>@L["VehicleDto:LicenseNum"]</FieldLabel>
+                            <TextEdit @bind-Text="@NewEntity.LicenseNum">
+                                <Feedback>
+                                    <ValidationError />
+                                </Feedback>
+                            </TextEdit>
+                        </Field>
+                    </Validation>
+                    <Validation MessageLocalizer="@LH.Localize">
+                        <Field>
+                            <FieldLabel>@L["VehicleDto:SeatCount"]</FieldLabel>
+                            <NumericEdit TValue="int" @bind-value="@NewEntity.SeatCount">
+                                <Feedback>
+                                    <ValidationError />
+                                </Feedback>
+                            </NumericEdit>
+                        </Field>
+                    </Validation>
+                    <Validation MessageLocalizer="@LH.Localize">
+                        <Field>
+                            <FieldLabel>@L["VehicleDto:Name"]</FieldLabel>
+                            <TextEdit @bind-Text="@NewEntity.Name">
+                                <Feedback>
+                                    <ValidationError />
+                                </Feedback>
+                            </TextEdit>
+                        </Field>
+                    </Validation>
+                </Validations>
+            </ModalBody>
+            <ModalFooter>
+                <Button Color="Color.Secondary"
+                        Clicked="CloseCreateModalAsync">
+                    @L["Cancel"]
+                </Button>
+                <Button Color="Color.Primary"
+                        Type="@ButtonType.Submit"
+                        PreventDefaultOnSubmit="true"
+                        Clicked="CreateEntityAsync">
+                    @L["Save"]
+                </Button>
+            </ModalFooter>
+        </Form>
+    </ModalContent>
+</Modal>
+
+                
+<Modal @ref="@EditModal">
+    <ModalContent IsCentered="true">
+        <Form>
+            <ModalHeader>
+                <ModalTitle>@EditingEntity.LicenseNum</ModalTitle>
+                <CloseButton Clicked="CloseEditModalAsync"/>
+            </ModalHeader>
+            <ModalBody>
+                <Validations @ref="@EditValidationsRef" Model="@EditingEntity" ValidateOnLoad="false">
+                    <Validation MessageLocalizer="@LH.Localize">
+                        <Field>
+                            <FieldLabel>@L["VehicleDto:LicenseNum"]</FieldLabel>
+                            <TextEdit @bind-Text="@EditingEntity.LicenseNum">
+                                <Feedback>
+                                    <ValidationError />
+                                </Feedback>
+                            </TextEdit>
+                        </Field>
+                    </Validation>
+                    <Validation MessageLocalizer="@LH.Localize">
+                        <Field>
+                            <FieldLabel>@L["VehicleDto:SeatCount"]</FieldLabel>
+                            <NumericEdit TValue="int" @bind-value="@EditingEntity.SeatCount">
+                                <Feedback>
+                                    <ValidationError />
+                                </Feedback>
+                            </NumericEdit>
+                        </Field>
+                    </Validation>
+                    <Validation MessageLocalizer="@LH.Localize">
+                        <Field>
+                            <FieldLabel>@L["VehicleDto:Name"]</FieldLabel>
+                            <TextEdit @bind-Text="@EditingEntity.Name">
+                                <Feedback>
+                                    <ValidationError />
+                                </Feedback>
+                            </TextEdit>
+                        </Field>
+                    </Validation>
+                </Validations>
+            </ModalBody>
+            <ModalFooter>
+                <Button Color="Color.Secondary"
+                        Clicked="CloseEditModalAsync">@L["Cancel"]</Button>
+                <Button Color="Color.Primary"
+                        Type="@ButtonType.Submit"
+                        PreventDefaultOnSubmit="true"
+                        Clicked="UpdateEntityAsync">@L["Save"]</Button>
+            </ModalFooter>
+        </Form>
+    </ModalContent>
+</Modal>

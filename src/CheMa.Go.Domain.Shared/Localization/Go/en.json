@@ -1,0 +1,9 @@
+{
+  "Culture": "en",
+  "Texts": {
+    "AppName": "CheMaGo",
+    "Menu:Home": "Home",
+    "Menu:OrderManagement": "Order List",
+    "Menu:VehicleManagement": "Vehicle List"
+  }
+}

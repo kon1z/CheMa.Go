@@ -1,0 +1,109 @@
+{
+  "template": "app",
+  "imports": {
+    "Volo.Abp.LeptonXLiteTheme": {
+      "version": "5.1.0",
+      "isInstalled": true,
+      "creationTime": "02/26/2026 13:15:49 +00:00"
+    },
+    "Volo.Abp.Account": {
+      "version": "10.1.0",
+      "isInstalled": true,
+      "creationTime": "02/26/2026 13:15:49 +00:00"
+    },
+    "Volo.Abp.OpenIddict": {
+      "version": "10.1.0",
+      "isInstalled": true,
+      "creationTime": "02/26/2026 13:15:49 +00:00"
+    },
+    "Volo.Abp.Identity": {
+      "version": "10.1.0",
+      "isInstalled": true,
+      "creationTime": "02/26/2026 13:15:49 +00:00"
+    },
+    "Volo.Abp.TenantManagement": {
+      "version": "10.1.0",
+      "isInstalled": true,
+      "creationTime": "02/26/2026 13:15:49 +00:00"
+    },
+    "Volo.Abp.SettingManagement": {
+      "version": "10.1.0",
+      "isInstalled": true,
+      "creationTime": "02/26/2026 13:15:49 +00:00"
+    },
+    "Volo.Abp.PermissionManagement": {
+      "version": "10.1.0",
+      "isInstalled": true,
+      "creationTime": "02/26/2026 13:15:49 +00:00"
+    },
+    "Volo.Abp.FeatureManagement": {
+      "version": "10.1.0",
+      "isInstalled": true,
+      "creationTime": "02/26/2026 13:15:49 +00:00"
+    }
+  },
+  "folders": {
+    "items": {
+      "src": {},
+      "test": {}
+    }
+  },
+  "packages": {
+    "CheMa.Go.Application": {
+      "path": "src/CheMa.Go.Application/CheMa.Go.Application.abppkg",
+      "folder": "src"
+    },
+    "CheMa.Go.Application.Tests": {
+      "path": "test/CheMa.Go.Application.Tests/CheMa.Go.Application.Tests.abppkg",
+      "folder": "test"
+    },
+    "CheMa.Go.Domain.Shared": {
+      "path": "src/CheMa.Go.Domain.Shared/CheMa.Go.Domain.Shared.abppkg",
+      "folder": "src"
+    },
+    "CheMa.Go.Application.Contracts": {
+      "path": "src/CheMa.Go.Application.Contracts/CheMa.Go.Application.Contracts.abppkg",
+      "folder": "src"
+    },
+    "CheMa.Go.HttpApi": {
+      "path": "src/CheMa.Go.HttpApi/CheMa.Go.HttpApi.abppkg",
+      "folder": "src"
+    },
+    "CheMa.Go.HttpApi.Client": {
+      "path": "src/CheMa.Go.HttpApi.Client/CheMa.Go.HttpApi.Client.abppkg",
+      "folder": "src"
+    },
+    "CheMa.Go.EntityFrameworkCore.Tests": {
+      "path": "test/CheMa.Go.EntityFrameworkCore.Tests/CheMa.Go.EntityFrameworkCore.Tests.abppkg",
+      "folder": "test"
+    },
+    "CheMa.Go.EntityFrameworkCore": {
+      "path": "src/CheMa.Go.EntityFrameworkCore/CheMa.Go.EntityFrameworkCore.abppkg",
+      "folder": "src"
+    },
+    "CheMa.Go.TestBase": {
+      "path": "test/CheMa.Go.TestBase/CheMa.Go.TestBase.abppkg",
+      "folder": "test"
+    },
+    "CheMa.Go.Domain.Tests": {
+      "path": "test/CheMa.Go.Domain.Tests/CheMa.Go.Domain.Tests.abppkg",
+      "folder": "test"
+    },
+    "CheMa.Go.HttpApi.Client.ConsoleTestApp": {
+      "path": "test/CheMa.Go.HttpApi.Client.ConsoleTestApp/CheMa.Go.HttpApi.Client.ConsoleTestApp.abppkg",
+      "folder": "test"
+    },
+    "CheMa.Go.DbMigrator": {
+      "path": "src/CheMa.Go.DbMigrator/CheMa.Go.DbMigrator.abppkg",
+      "folder": "src"
+    },
+    "CheMa.Go.Blazor": {
+      "path": "src/CheMa.Go.Blazor/CheMa.Go.Blazor.abppkg",
+      "folder": "src"
+    },
+    "CheMa.Go.Domain": {
+      "path": "src/CheMa.Go.Domain/CheMa.Go.Domain.abppkg",
+      "folder": "src"
+    }
+  }
+}

@@ -1,0 +1,6 @@
+﻿body {
+}
+
+.b-is-autocomplete.b-is-autocomplete-multipleselection.focus {
+    background-color: white !important 
+}
