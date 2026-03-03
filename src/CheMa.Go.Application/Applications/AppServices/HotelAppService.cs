@@ -12,6 +12,7 @@ using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
 using Volo.Abp.Identity;
+using Volo.Abp.Domain.Entities;
 
 namespace CheMa.Go.Applications.AppServices
 {
@@ -39,19 +40,32 @@ namespace CheMa.Go.Applications.AppServices
 
         public async Task<HotelDto> GetListHotelUsersAsync(long hotelId)
         {
-            var hotel = await _hotelRepository.GetAsync(hotelId);
+            var queryable = await _hotelRepository.WithDetailsAsync();
+            var hotel = await AsyncExecuter.FirstOrDefaultAsync(queryable, x => x.Id == hotelId);
+            if (hotel == null)
+            {
+                throw new EntityNotFoundException(typeof(Hotel), hotelId);
+            }
 
             return ObjectMapper.Map<Hotel, HotelDto>(hotel);
         }
 
         public async Task LinkUsersToHotelAsync(LinkUsersToHotelInput input)
         {
-            var hotel = await _hotelRepository.GetAsync(input.HotelId);
+            var queryable = await _hotelRepository.WithDetailsAsync();
+            var hotel = await AsyncExecuter.FirstOrDefaultAsync(queryable, x => x.Id == input.HotelId);
+            if (hotel == null)
+            {
+                throw new EntityNotFoundException(typeof(Hotel), input.HotelId);
+            }
+
             var users = await _identityUserRepository.GetListByIdsAsync(input.UserIds);
             foreach (var user in users)
             {
                 hotel.HotelUsers.AddIfNotContains(user);
             }
+
+            await _hotelRepository.UpdateAsync(hotel, autoSave: true);
         }
 
         public async Task RemoteUserFromHotelAsync(long hotelId, Guid userId)
