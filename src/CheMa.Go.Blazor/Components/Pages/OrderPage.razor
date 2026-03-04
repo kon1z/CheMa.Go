@@ -19,14 +19,74 @@
             <Column ColumnSize="ColumnSize.IsAuto">
                 <h2>@L["Menu:OrderManagement"]</h2>
             </Column>
-            <Column ColumnSize="ColumnSize.IsAuto">
-                <Button Color="Color.Primary" Clicked="OpenCreateModalAsync">
-                    @L["New"]
-                </Button>
-            </Column>
         </Row>
     </CardHeader>
     <CardBody>
+        <Row Class="mb-3 g-2 align-items-end">
+            <Column ColumnSize="ColumnSize.Is2">
+                <Field>
+                    <FieldLabel>@L["OrderDto:OrderType"]</FieldLabel>
+                    <Select TValue="OrderType?" @bind-SelectedValue="GetListInput.OrderType">
+                        <SelectItem TValue="OrderType?" Value="@((OrderType?)null)">--</SelectItem>
+                        @foreach (int orderType in Enum.GetValues(typeof(OrderType)))
+                        {
+                            <SelectItem TValue="OrderType?" Value="@((OrderType)orderType)">
+                                @L[$"Enum:OrderType.{orderType}"]
+                            </SelectItem>
+                        }
+                    </Select>
+                </Field>
+            </Column>
+            <Column ColumnSize="ColumnSize.Is2">
+                <Field>
+                    <FieldLabel>@L["OrderDto:OrderStatus"]</FieldLabel>
+                    <Select TValue="OrderStatus?" @bind-SelectedValue="GetListInput.OrderStatus">
+                        <SelectItem TValue="OrderStatus?" Value="@((OrderStatus?)null)">--</SelectItem>
+                        @foreach (int orderStatus in Enum.GetValues(typeof(OrderStatus)))
+                        {
+                            <SelectItem TValue="OrderStatus?" Value="@((OrderStatus)orderStatus)">
+                                @L[$"Enum:OrderStatus.{orderStatus}"]
+                            </SelectItem>
+                        }
+                    </Select>
+                </Field>
+            </Column>
+            <Column ColumnSize="ColumnSize.Is3">
+                <Field>
+                    <FieldLabel>@L["OrderDto:AppointmentTime"]</FieldLabel>
+                    <div class="d-flex gap-2">
+                        <DatePicker TValue="DateTime?"
+                                    @bind-Date="GetListInput.AppointmentStartTime"
+                                    InputMode="DateInputMode.DateTime"
+                                    DisplayFormat="yyyy-MM-dd HH:mm" />
+                        <DatePicker TValue="DateTime?"
+                                    @bind-Date="GetListInput.AppointmentEndTime"
+                                    InputMode="DateInputMode.DateTime"
+                                    DisplayFormat="yyyy-MM-dd HH:mm" />
+                    </div>
+                </Field>
+            </Column>
+            <Column ColumnSize="ColumnSize.Is2">
+                <Field>
+                    <FieldLabel>@L["VehicleDto:LicenseNum"]</FieldLabel>
+                    <TextEdit @bind-Text="GetListInput.LicenseNum"></TextEdit>
+                </Field>
+            </Column>
+            <Column ColumnSize="ColumnSize.Is3">
+                <div class="d-flex justify-content-end gap-2">
+                    <Button Color="Color.Primary" Clicked="OpenCreateModalAsync">
+                        @L["New"]
+                    </Button>
+                    <Button Color="Color.Primary" Clicked="SearchOrdersAsync">
+                        @L["Search"]
+                    </Button>
+                    <Button Color="Color.Secondary" Clicked="ClearOrderSearchAsync">
+                        @L["Clear"]
+                    </Button>
+                </div>
+            </Column>
+        </Row>
+
         <DataGrid TItem="OrderDto"
                   Data="Entities"
                   ReadData="OnDataGridReadAsync"
@@ -75,15 +135,15 @@
                     </DisplayTemplate>
                 </DataGridColumn>
                 <DataGridColumn TItem="OrderDto"
-                                Field="@nameof(OrderDto.Vehicle.LicenseNum)"
+                                Field="Vehicle.LicenseNum"
                                 Caption="@L["VehicleDto:LicenseNum"]">
                 </DataGridColumn>
                 <DataGridColumn TItem="OrderDto"
-                                Field="@nameof(OrderDto.Vehicle.Name)"
+                                Field="Vehicle.Name"
                                 Caption="@L["VehicleDto:Name"]">
                 </DataGridColumn>
                 <DataGridColumn TItem="OrderDto"
-                                Field="@nameof(OrderDto.Vehicle.SeatCount)"
+                                Field="Vehicle.SeatCount"
                                 Caption="@L["VehicleDto:SeatCount"]">
                 </DataGridColumn>
             </DataGridColumns>

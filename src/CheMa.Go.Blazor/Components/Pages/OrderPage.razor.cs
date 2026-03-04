@@ -4,6 +4,7 @@ using CheMa.Go.Applications.Dtos;
 using CheMa.Go.Localization;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using System;
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,6 +37,21 @@ namespace CheMa.Go.Blazor.Components.Pages
         protected override void Dispose(bool disposing)
         {
             PageLayout.ShowToolbar = true;
+        }
+
+        private async Task SearchOrdersAsync()
+        {
+            await SearchEntitiesAsync();
+        }
+
+        private async Task ClearOrderSearchAsync()
+        {
+            GetListInput.OrderType = null;
+            GetListInput.OrderStatus = null;
+            GetListInput.AppointmentStartTime = null;
+            GetListInput.AppointmentEndTime = null;
+            GetListInput.LicenseNum = null;
+            await SearchEntitiesAsync();
         }
 
         public async Task OpenLinkPassengerModalAsync(OrderDto entity)

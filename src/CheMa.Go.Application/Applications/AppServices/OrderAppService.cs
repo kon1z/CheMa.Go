@@ -92,7 +92,34 @@ namespace CheMa.Go.Applications.AppServices
         protected override async Task<IQueryable<Order>> CreateFilteredQueryAsync(GetListOrderInput input)
         {
             var queryable = await base.CreateFilteredQueryAsync(input);
-            return queryable.Include(x => x.Vehicle).Include(x => x.PassengerInfos);
+            IQueryable<Order> query = queryable.Include(x => x.Vehicle).Include(x => x.PassengerInfos);
+
+            if (input.OrderType.HasValue)
+            {
+                query = query.Where(x => x.OrderType == input.OrderType.Value);
+            }
+
+            if (input.OrderStatus.HasValue)
+            {
+                query = query.Where(x => x.OrderStatus == input.OrderStatus.Value);
+            }
+
+            if (input.AppointmentStartTime.HasValue)
+            {
+                query = query.Where(x => x.AppointmentTime >= input.AppointmentStartTime.Value);
+            }
+
+            if (input.AppointmentEndTime.HasValue)
+            {
+                query = query.Where(x => x.AppointmentTime <= input.AppointmentEndTime.Value);
+            }
+
+            if (!string.IsNullOrWhiteSpace(input.LicenseNum))
+            {
+                query = query.Where(x => x.Vehicle != null && x.Vehicle.LicenseNum.Contains(input.LicenseNum));
+            }
+
+            return query;
         }
     }
 }
