@@ -892,8 +892,7 @@ namespace CheMa.Go.Migrations
                     OrderSource = table.Column<int>(type: "integer", nullable: false),
                     AppointmentTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     VehicleId = table.Column<long>(type: "bigint", nullable: true),
-                    DriverId = table.Column<Guid>(type: "uuid", nullable: false),
-                    HotelId = table.Column<long>(type: "bigint", nullable: false),
+                    DriverId = table.Column<Guid>(type: "uuid", nullable: true),
                     FlightInfo_ArrivalAirport = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: true),
                     FlightInfo_ArrivalTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     FlightInfo_DepartureAirport = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: true),
@@ -916,14 +915,7 @@ namespace CheMa.Go.Migrations
                         name: "FK_AppOrders_AbpUsers_DriverId",
                         column: x => x.DriverId,
                         principalTable: "AbpUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_AppOrders_AppHotels_HotelId",
-                        column: x => x.HotelId,
-                        principalTable: "AppHotels",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_AppOrders_AppVehicles_VehicleId",
                         column: x => x.VehicleId,
@@ -990,7 +982,6 @@ namespace CheMa.Go.Migrations
                     Count = table.Column<int>(type: "integer", nullable: false),
                     AppointmentTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     Remark = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
-                    OrderId1 = table.Column<long>(type: "bigint", nullable: true),
                     OrderId = table.Column<long>(type: "bigint", nullable: true),
                     ExtraProperties = table.Column<string>(type: "text", nullable: false),
                     ConcurrencyStamp = table.Column<string>(type: "character varying(40)", maxLength: 40, nullable: false)
@@ -1001,11 +992,6 @@ namespace CheMa.Go.Migrations
                     table.ForeignKey(
                         name: "FK_AppPassengers_AppOrders_OrderId",
                         column: x => x.OrderId,
-                        principalTable: "AppOrders",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_AppPassengers_AppOrders_OrderId1",
-                        column: x => x.OrderId1,
                         principalTable: "AppOrders",
                         principalColumn: "Id");
                 });
@@ -1295,11 +1281,6 @@ namespace CheMa.Go.Migrations
                 column: "DriverId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AppOrders_HotelId",
-                table: "AppOrders",
-                column: "HotelId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_AppOrders_VehicleId",
                 table: "AppOrders",
                 column: "VehicleId");
@@ -1308,11 +1289,6 @@ namespace CheMa.Go.Migrations
                 name: "IX_AppPassengers_OrderId",
                 table: "AppPassengers",
                 column: "OrderId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AppPassengers_OrderId1",
-                table: "AppPassengers",
-                column: "OrderId1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AppVehicles_LicenseNum",
@@ -1468,6 +1444,9 @@ namespace CheMa.Go.Migrations
                 name: "AbpRoles");
 
             migrationBuilder.DropTable(
+                name: "AppHotels");
+
+            migrationBuilder.DropTable(
                 name: "AppOrders");
 
             migrationBuilder.DropTable(
@@ -1478,9 +1457,6 @@ namespace CheMa.Go.Migrations
 
             migrationBuilder.DropTable(
                 name: "AbpUsers");
-
-            migrationBuilder.DropTable(
-                name: "AppHotels");
 
             migrationBuilder.DropTable(
                 name: "AppVehicles");

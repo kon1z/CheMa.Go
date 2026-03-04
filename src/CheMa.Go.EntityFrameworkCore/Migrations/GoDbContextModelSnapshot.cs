@@ -104,16 +104,13 @@ namespace CheMa.Go.Migrations
                         .HasColumnType("timestamp without time zone")
                         .HasColumnName("DeletionTime");
 
-                    b.Property<Guid>("DriverId")
+                    b.Property<Guid?>("DriverId")
                         .HasColumnType("uuid");
 
                     b.Property<string>("ExtraProperties")
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("ExtraProperties");
-
-                    b.Property<long>("HotelId")
-                        .HasColumnType("bigint");
 
                     b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()
@@ -166,8 +163,6 @@ namespace CheMa.Go.Migrations
 
                     b.HasIndex("DriverId");
 
-                    b.HasIndex("HotelId");
-
                     b.HasIndex("VehicleId");
 
                     b.ToTable("AppOrders", (string)null);
@@ -207,9 +202,6 @@ namespace CheMa.Go.Migrations
                     b.Property<long?>("OrderId")
                         .HasColumnType("bigint");
 
-                    b.Property<long?>("OrderId1")
-                        .HasColumnType("bigint");
-
                     b.Property<string>("Phone")
                         .IsRequired()
                         .HasMaxLength(15)
@@ -223,8 +215,6 @@ namespace CheMa.Go.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("OrderId");
-
-                    b.HasIndex("OrderId1");
 
                     b.ToTable("AppPassengers", (string)null);
                 });
@@ -2238,15 +2228,7 @@ namespace CheMa.Go.Migrations
                 {
                     b.HasOne("Volo.Abp.Identity.IdentityUser", "Driver")
                         .WithMany()
-                        .HasForeignKey("DriverId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("CheMa.Go.Domain.Entities.Hotel", "Hotel")
-                        .WithMany()
-                        .HasForeignKey("HotelId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("DriverId");
 
                     b.HasOne("CheMa.Go.Domain.Entities.Vehicle", "Vehicle")
                         .WithMany()
@@ -2254,20 +2236,14 @@ namespace CheMa.Go.Migrations
 
                     b.Navigation("Driver");
 
-                    b.Navigation("Hotel");
-
                     b.Navigation("Vehicle");
                 });
 
             modelBuilder.Entity("CheMa.Go.Domain.Entities.Passenger", b =>
                 {
-                    b.HasOne("CheMa.Go.Domain.Entities.Order", null)
+                    b.HasOne("CheMa.Go.Domain.Entities.Order", "Order")
                         .WithMany("PassengerInfos")
                         .HasForeignKey("OrderId");
-
-                    b.HasOne("CheMa.Go.Domain.Entities.Order", "Order")
-                        .WithMany()
-                        .HasForeignKey("OrderId1");
 
                     b.Navigation("Order");
                 });

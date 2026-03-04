@@ -92,7 +92,9 @@ namespace CheMa.Go.Applications.AppServices
         protected override async Task<IQueryable<Order>> CreateFilteredQueryAsync(GetListOrderInput input)
         {
             var queryable = await base.CreateFilteredQueryAsync(input);
-            IQueryable<Order> query = queryable.Include(x => x.Vehicle).Include(x => x.PassengerInfos);
+            IQueryable<Order> query = queryable.Include(x => x.Vehicle)
+                .Include(x => x.PassengerInfos)
+                .Include(x => x.Driver);
 
             if (input.OrderType.HasValue)
             {

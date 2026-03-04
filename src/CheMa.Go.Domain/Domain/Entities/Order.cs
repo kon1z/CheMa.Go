@@ -13,35 +13,47 @@ namespace CheMa.Go.Domain.Entities
         /// 订单类型（接机、送机）
         /// </summary>
         public OrderType OrderType { get; set; }
+
         /// <summary>
         /// 订单状态
         /// </summary>
         public OrderStatus OrderStatus { get; set; }
+
         /// <summary>
         /// 订单来源
         /// </summary>
         public OrderSource OrderSource { get; set; }
+
         /// <summary>
         /// 航班信息
         /// </summary>
         public FlightInfo? FlightInfo { get; set; }
+
         /// <summary>
         /// 预约时间
         /// </summary>
         public DateTime AppointmentTime { get; set; }
 
         /// <summary>
+        /// 接送机Id
+        /// </summary>
+        public long? VehicleId { get; set; }
+
+        /// <summary>
         /// 接送机车辆
         /// </summary>
         public virtual Vehicle? Vehicle { get; set; }
+
         /// <summary>
-        /// 接送机司机
+        /// 司机Id
         /// </summary>
-        public virtual IdentityUser Driver { get; set; } = null!;
+        public Guid? DriverId { get; set; }
+
         /// <summary>
-        /// 酒店信息
+        /// 司机
         /// </summary>
-        public virtual Hotel Hotel { get; set; } = null!;
+        public virtual IdentityUser? Driver { get; set; }
+
         /// <summary>
         /// 乘客信息
         /// </summary>

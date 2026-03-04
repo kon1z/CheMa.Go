@@ -27,6 +27,11 @@ public class Passenger : AggregateRoot<long>
     public string Remark { get; set; } = string.Empty;
 
     /// <summary>
+    /// 所属订单Id
+    /// </summary>
+    public long? OrderId { get; set; }
+
+    /// <summary>
     /// 所属订单
     /// </summary>
     public virtual Order? Order { get; set; }

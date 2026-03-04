@@ -61,10 +61,9 @@ public static class AppDbContextModelCreatingExtensions
                 f.Property(x => x.DepartureAirport).HasMaxLength(20);
             });
 
-            b.HasOne(x => x.Vehicle).WithMany();
-            b.HasOne(x => x.Driver).WithMany();
-            b.HasOne(x => x.Hotel).WithMany();
-            b.HasMany(x => x.PassengerInfos).WithOne();
+            b.HasOne(x => x.Vehicle).WithMany().HasForeignKey(x => x.VehicleId);
+            b.HasOne(x => x.Driver).WithMany().HasForeignKey(x => x.DriverId);
+            b.HasMany(x => x.PassengerInfos).WithOne(x => x.Order).HasForeignKey(x => x.OrderId);
 
             b.ApplyObjectExtensionMappings();
         });

@@ -4,6 +4,8 @@
 @using CheMa.Go.Applications.AppServices
 @using CheMa.Go.Applications.Dtos
 @using CheMa.Go.Domain.Enums
+@using Blazorise.DataGrid
+@using Volo.Abp.Identity
 @using Volo.Abp.AspNetCore.Components.Web
 @using Volo.Abp.AspNetCore.Components.Web.Theming.Layout
 @inject PageLayout PageLayout
@@ -22,70 +24,60 @@
         </Row>
     </CardHeader>
     <CardBody>
-        <Row Class="mb-3 g-2 align-items-end">
-            <Column ColumnSize="ColumnSize.Is2">
-                <Field>
-                    <FieldLabel>@L["OrderDto:OrderType"]</FieldLabel>
-                    <Select TValue="OrderType?" @bind-SelectedValue="GetListInput.OrderType">
-                        <SelectItem TValue="OrderType?" Value="@((OrderType?)null)">--</SelectItem>
-                        @foreach (int orderType in Enum.GetValues(typeof(OrderType)))
-                        {
-                            <SelectItem TValue="OrderType?" Value="@((OrderType)orderType)">
-                                @L[$"Enum:OrderType.{orderType}"]
-                            </SelectItem>
-                        }
-                    </Select>
-                </Field>
-            </Column>
-            <Column ColumnSize="ColumnSize.Is2">
-                <Field>
-                    <FieldLabel>@L["OrderDto:OrderStatus"]</FieldLabel>
-                    <Select TValue="OrderStatus?" @bind-SelectedValue="GetListInput.OrderStatus">
-                        <SelectItem TValue="OrderStatus?" Value="@((OrderStatus?)null)">--</SelectItem>
-                        @foreach (int orderStatus in Enum.GetValues(typeof(OrderStatus)))
-                        {
-                            <SelectItem TValue="OrderStatus?" Value="@((OrderStatus)orderStatus)">
-                                @L[$"Enum:OrderStatus.{orderStatus}"]
-                            </SelectItem>
-                        }
-                    </Select>
-                </Field>
-            </Column>
-            <Column ColumnSize="ColumnSize.Is3">
-                <Field>
-                    <FieldLabel>@L["OrderDto:AppointmentTime"]</FieldLabel>
-                    <div class="d-flex gap-2">
-                        <DatePicker TValue="DateTime?"
-                                    @bind-Date="GetListInput.AppointmentStartTime"
-                                    InputMode="DateInputMode.DateTime"
-                                    DisplayFormat="yyyy-MM-dd HH:mm" />
-                        <DatePicker TValue="DateTime?"
-                                    @bind-Date="GetListInput.AppointmentEndTime"
-                                    InputMode="DateInputMode.DateTime"
-                                    DisplayFormat="yyyy-MM-dd HH:mm" />
-                    </div>
-                </Field>
-            </Column>
-            <Column ColumnSize="ColumnSize.Is2">
-                <Field>
-                    <FieldLabel>@L["VehicleDto:LicenseNum"]</FieldLabel>
-                    <TextEdit @bind-Text="GetListInput.LicenseNum"></TextEdit>
-                </Field>
-            </Column>
-            <Column ColumnSize="ColumnSize.Is3">
-                <div class="d-flex justify-content-end gap-2">
-                    <Button Color="Color.Primary" Clicked="OpenCreateModalAsync">
-                        @L["New"]
-                    </Button>
-                    <Button Color="Color.Primary" Clicked="SearchOrdersAsync">
-                        @L["Search"]
-                    </Button>
-                    <Button Color="Color.Secondary" Clicked="ClearOrderSearchAsync">
-                        @L["Clear"]
-                    </Button>
+        <div class="mb-3 d-grid gap-2" style="grid-template-columns: repeat(3, minmax(0, 1fr));">
+            <Field>
+                <FieldLabel>@L["OrderDto:OrderType"]</FieldLabel>
+                <Select TValue="OrderType?" @bind-SelectedValue="GetListInput.OrderType">
+                    <SelectItem TValue="OrderType?" Value="@((OrderType?)null)">--</SelectItem>
+                    @foreach (int orderType in Enum.GetValues(typeof(OrderType)))
+                    {
+                        <SelectItem TValue="OrderType?" Value="@((OrderType)orderType)">
+                            @L[$"Enum:OrderType.{orderType}"]
+                        </SelectItem>
+                    }
+                </Select>
+            </Field>
+            <Field>
+                <FieldLabel>@L["OrderDto:OrderStatus"]</FieldLabel>
+                <Select TValue="OrderStatus?" @bind-SelectedValue="GetListInput.OrderStatus">
+                    <SelectItem TValue="OrderStatus?" Value="@((OrderStatus?)null)">--</SelectItem>
+                    @foreach (int orderStatus in Enum.GetValues(typeof(OrderStatus)))
+                    {
+                        <SelectItem TValue="OrderStatus?" Value="@((OrderStatus)orderStatus)">
+                            @L[$"Enum:OrderStatus.{orderStatus}"]
+                        </SelectItem>
+                    }
+                </Select>
+            </Field>
+            <Field>
+                <FieldLabel>@L["OrderDto:AppointmentTime"]</FieldLabel>
+                <div class="d-flex gap-2">
+                    <DatePicker TValue="DateTime?"
+                                @bind-Date="GetListInput.AppointmentStartTime"
+                                InputMode="DateInputMode.DateTime"
+                                DisplayFormat="yyyy-MM-dd HH:mm" />
+                    <DatePicker TValue="DateTime?"
+                                @bind-Date="GetListInput.AppointmentEndTime"
+                                InputMode="DateInputMode.DateTime"
+                                DisplayFormat="yyyy-MM-dd HH:mm" />
                 </div>
-            </Column>
-        </Row>
+            </Field>
+            <Field>
+                <FieldLabel>@L["VehicleDto:LicenseNum"]</FieldLabel>
+                <TextEdit @bind-Text="GetListInput.LicenseNum"></TextEdit>
+            </Field>
+            <div class="d-flex justify-content-end gap-2" style="grid-column: 3; align-self: end;">
+                <Button Color="Color.Primary" Clicked="OpenCreateModalAsync">
+                    @L["New"]
+                </Button>
+                <Button Color="Color.Primary" Clicked="SearchOrdersAsync">
+                    @L["Search"]
+                </Button>
+                <Button Color="Color.Secondary" Clicked="ClearOrderSearchAsync">
+                    @L["Clear"]
+                </Button>
+            </div>
+        </div>
 
         <DataGrid TItem="OrderDto"
                   Data="Entities"
@@ -93,7 +85,7 @@
                   TotalItems="TotalCount"
                   ShowPager="true"
                   PageSize="PageSize"
-                  DetailRowTrigger="@(e => DisplayDetailRow(e.Item))"
+                  DetailRowTrigger="@(e => e.DetailRowTriggerType == DetailRowTriggerType.RowClick && DisplayDetailRow(e.Item))"
                   DetailRowStartsVisible="false"
                   Responsive>
             <DataGridColumns>
@@ -114,6 +106,10 @@
                     </DisplayTemplate>
                 </DataGridEntityActionsColumn>
                 <DataGridColumn TItem="OrderDto"
+                                Field="@nameof(OrderDto.Id)"
+                                Caption="@L["OrderDto:Id"]">
+                </DataGridColumn>
+                <DataGridColumn TItem="OrderDto"
                                 Field="@nameof(OrderDto.OrderType)"
                                 Caption="@L["OrderDto:OrderType"]">
                     <DisplayTemplate>
@@ -133,6 +129,10 @@
                     <DisplayTemplate>
                         @context.AppointmentTime.ToString("G")
                     </DisplayTemplate>
+                </DataGridColumn>
+                <DataGridColumn TItem="OrderDto"
+                                Field="@nameof(OrderDto.DriverName)"
+                                Caption="@L["OrderDto:DriverName"]">
                 </DataGridColumn>
                 <DataGridColumn TItem="OrderDto"
                                 Field="Vehicle.LicenseNum"
@@ -183,7 +183,7 @@
             <ModalBody>
                 <Validations @ref="@CreateValidationsRef" Model="@NewEntity" ValidateOnLoad="false">
                     <Field>
-                        <FieldLabel>@L["Type"]</FieldLabel>
+                        <FieldLabel>@L["OrderDto:OrderType"]</FieldLabel>
                         <Select TValue="OrderType" @bind-SelectedValue="@NewEntity.OrderType">
                             @foreach (int orderType in Enum.GetValues(typeof(OrderType)))
                             {
@@ -192,6 +192,52 @@
                                 </SelectItem>
                             }
                         </Select>
+                    </Field>
+                    <Field>
+                        <FieldLabel>@L["OrderDto:OrderStatus"]</FieldLabel>
+                        <Select TValue="OrderStatus" @bind-SelectedValue="@NewEntity.OrderStatus">
+                            @foreach (int orderStatus in Enum.GetValues(typeof(OrderStatus)))
+                            {
+                                <SelectItem TValue="OrderStatus" Value="@((OrderStatus)orderStatus)">
+                                    @L[$"Enum:OrderStatus.{orderStatus}"]
+                                </SelectItem>
+                            }
+                        </Select>
+                    </Field>
+                    <Field>
+                        <FieldLabel>@L["OrderDto:OrderSource"]</FieldLabel>
+                        <Select TValue="OrderSource" @bind-SelectedValue="@NewEntity.OrderSource">
+                            @foreach (int orderSource in Enum.GetValues(typeof(OrderSource)))
+                            {
+                                <SelectItem TValue="OrderSource" Value="@((OrderSource)orderSource)">
+                                    @L[$"Enum:OrderSource.{orderSource}"]
+                                </SelectItem>
+                            }
+                        </Select>
+                    </Field>
+                    <Field>
+                        <FieldLabel>@L["OrderDto:AppointmentTime"]</FieldLabel>
+                        <DatePicker TValue="DateTime"
+                                    @bind-Date="NewEntity.AppointmentTime"
+                                    InputMode="DateInputMode.DateTime"
+                                    DisplayFormat="yyyy-MM-dd HH:mm" />
+                    </Field>
+                    <Field>
+                        <FieldLabel>@L["DriverDto:Name"]</FieldLabel>
+                        <Autocomplete TItem="IdentityUserDto"
+                                      TValue="Guid?"
+                                      Data="@FilteredDrivers"
+                                      TotalItems="TotalDriversCount"
+                                      TextField="@(user => user.UserName)"
+                                      ValueField="@(user => user.Id)"
+                                      @bind-SelectedValue="SelectedDriverIdForCreate"
+                                      Virtualize
+                                      ReadData="@OnDriversReadData"
+                                      SearchBackground="Background.White">
+                            <NotFoundContent>
+                                @string.Format(L["InputNotFound"], context)
+                            </NotFoundContent>
+                        </Autocomplete>
                     </Field>
                 </Validations>
             </ModalBody>
@@ -219,7 +265,48 @@
                 <CloseButton Clicked="CloseEditModalAsync" />
             </ModalHeader>
             <ModalBody>
-                <p>@L["OrderDto:OrderType"] / @L["OrderDto:OrderStatus"]</p>
+                <Validations @ref="@EditValidationsRef" Model="@EditingEntity" ValidateOnLoad="false">
+                    <Field>
+                        <FieldLabel>@L["OrderDto:OrderType"]</FieldLabel>
+                        <Select TValue="OrderType" @bind-SelectedValue="@EditingEntity.OrderType">
+                            @foreach (int orderType in Enum.GetValues(typeof(OrderType)))
+                            {
+                                <SelectItem TValue="OrderType" Value="@((OrderType)orderType)">
+                                    @L[$"Enum:OrderType.{orderType}"]
+                                </SelectItem>
+                            }
+                        </Select>
+                    </Field>
+                    <Field>
+                        <FieldLabel>@L["OrderDto:OrderStatus"]</FieldLabel>
+                        <Select TValue="OrderStatus" @bind-SelectedValue="@EditingEntity.OrderStatus">
+                            @foreach (int orderStatus in Enum.GetValues(typeof(OrderStatus)))
+                            {
+                                <SelectItem TValue="OrderStatus" Value="@((OrderStatus)orderStatus)">
+                                    @L[$"Enum:OrderStatus.{orderStatus}"]
+                                </SelectItem>
+                            }
+                        </Select>
+                    </Field>
+                    <Field>
+                        <FieldLabel>@L["OrderDto:OrderSource"]</FieldLabel>
+                        <Select TValue="OrderSource" @bind-SelectedValue="@EditingEntity.OrderSource">
+                            @foreach (int orderSource in Enum.GetValues(typeof(OrderSource)))
+                            {
+                                <SelectItem TValue="OrderSource" Value="@((OrderSource)orderSource)">
+                                    @L[$"Enum:OrderSource.{orderSource}"]
+                                </SelectItem>
+                            }
+                        </Select>
+                    </Field>
+                    <Field>
+                        <FieldLabel>@L["OrderDto:AppointmentTime"]</FieldLabel>
+                        <DatePicker TValue="DateTime"
+                                    @bind-Date="EditingEntity.AppointmentTime"
+                                    InputMode="DateInputMode.DateTime"
+                                    DisplayFormat="yyyy-MM-dd HH:mm" />
+                    </Field>
+                </Validations>
             </ModalBody>
             <ModalFooter>
                 <Button Color="Color.Secondary"

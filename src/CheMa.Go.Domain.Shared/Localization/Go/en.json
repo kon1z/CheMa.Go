@@ -11,6 +11,8 @@
     "LinkPassengersToOrderInput:PassengerIds": "Passengers",
     "Menu:Home": "Home",
     "Menu:OrderManagement": "Order List",
+    "OrderDto:DriverName": "Driver Name",
+    "OrderDto:OrderNo": "Order No",
     "Menu:VehicleManagement": "Vehicle List",
     "New": "New",
     "Save": "Save",

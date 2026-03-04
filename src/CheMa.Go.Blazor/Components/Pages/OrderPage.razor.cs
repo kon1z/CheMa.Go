@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CheMa.Go.Applications.AppServices;
+using Volo.Abp.Identity;
 
 namespace CheMa.Go.Blazor.Components.Pages
 {
@@ -28,6 +29,9 @@ namespace CheMa.Go.Blazor.Components.Pages
 
         IEnumerable<PassengerDto> FilteredPassengers { get; set; } = new List<PassengerDto>();
         int TotalPassengersCount { get; set; }
+        IEnumerable<IdentityUserDto> FilteredDrivers { get; set; } = new List<IdentityUserDto>();
+        int TotalDriversCount { get; set; }
+        Guid? SelectedDriverIdForCreate { get; set; }
 
         public OrderPage()
         {
@@ -42,6 +46,25 @@ namespace CheMa.Go.Blazor.Components.Pages
         private async Task SearchOrdersAsync()
         {
             await SearchEntitiesAsync();
+        }
+
+        private async Task OnDriversReadData(AutocompleteReadDataEventArgs e)
+        {
+            if (e.CancellationToken.IsCancellationRequested)
+            {
+                return;
+            }
+
+            var userAppService = ScopedServices.GetRequiredService<IIdentityUserAppService>();
+            var result = await userAppService.GetListAsync(new GetIdentityUsersInput
+            {
+                MaxResultCount = e.VirtualizeCount,
+                SkipCount = e.VirtualizeOffset,
+                Filter = e.SearchValue
+            });
+
+            FilteredDrivers = result.Items;
+            TotalDriversCount = (int)result.TotalCount;
         }
 
         private async Task ClearOrderSearchAsync()
