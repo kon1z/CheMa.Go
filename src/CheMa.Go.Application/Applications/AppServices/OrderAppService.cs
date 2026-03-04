@@ -14,56 +14,34 @@ namespace CheMa.Go.Applications.AppServices
         CrudAppService<Order, OrderDto, long, GetListOrderInput, CreateOrderInput, UpdateOrderInput>, IOrderAppService
     {
         private readonly IOrderRepository _orderRepository;
-        private readonly IRepository<Passenger, long> _passengerRepository;
+        private readonly IRepository<Vehicle, long> _vehicleRepository;
 
         public OrderAppService(
             IRepository<Order, long> repository,
             IOrderRepository orderRepository,
-            IRepository<Passenger, long> passengerRepository) : base(repository)
+            IRepository<Vehicle, long> vehicleRepository) : base(repository)
         {
             _orderRepository = orderRepository;
-            _passengerRepository = passengerRepository;
+            _vehicleRepository = vehicleRepository;
         }
 
-        public async Task<OrderDto> GetListOrderPassengersAsync(long orderId)
+        public async Task LinkVehicleToOrderAsync(LinkVehicleToOrderInput input)
         {
-            var queryable = await _orderRepository.WithDetailsAsync();
-            var order = await AsyncExecuter.FirstOrDefaultAsync(
-                queryable.Include(x => x.PassengerInfos).Include(x => x.Vehicle),
-                x => x.Id == orderId);
+            var order = await Repository.GetAsync(input.OrderId);
 
-            if (order == null)
+            if (input.VehicleId.HasValue)
             {
-                throw new EntityNotFoundException(typeof(Order), orderId);
-            }
-
-            return ObjectMapper.Map<Order, OrderDto>(order);
-        }
-
-        public async Task LinkPassengersToOrderAsync(LinkPassengersToOrderInput input)
-        {
-            if (input.PassengerIds.Count == 0)
-            {
-                return;
-            }
-
-            var queryable = await _orderRepository.WithDetailsAsync();
-            var order = await AsyncExecuter.FirstOrDefaultAsync(
-                queryable.Include(x => x.PassengerInfos),
-                x => x.Id == input.OrderId);
-
-            if (order == null)
-            {
-                throw new EntityNotFoundException(typeof(Order), input.OrderId);
-            }
-
-            var passengers = await _passengerRepository.GetListAsync(x => input.PassengerIds.Contains(x.Id));
-            foreach (var passenger in passengers)
-            {
-                if (order.PassengerInfos.All(x => x.Id != passenger.Id))
+                var hasVehicle = await _vehicleRepository.AnyAsync(x => x.Id == input.VehicleId.Value);
+                if (!hasVehicle)
                 {
-                    order.PassengerInfos.Add(passenger);
+                    throw new EntityNotFoundException(typeof(Vehicle), input.VehicleId.Value);
                 }
+            }
+
+            order.VehicleId = input.VehicleId;
+            if (!input.VehicleId.HasValue)
+            {
+                order.Vehicle = null;
             }
 
             await _orderRepository.UpdateAsync(order, autoSave: true);

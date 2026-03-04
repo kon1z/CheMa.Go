@@ -29,11 +29,6 @@ public class OrderDto : EntityDto<long>
     public List<PassengerDto> PassengerInfos { get; set; } = new();
 
     /// <summary>
-    /// 航班信息
-    /// </summary>
-    public FlightInfoDto? FlightInfo { get; set; }
-
-    /// <summary>
     /// 预约时间
     /// </summary>
     public DateTime AppointmentTime { get; set; }
@@ -41,15 +36,12 @@ public class OrderDto : EntityDto<long>
     /// <summary>
     /// 接送机车辆
     /// </summary>
-    public VehicleDto Vehicle { get; set; } = null!;
+    public VehicleDto? Vehicle { get; set; }
 
     /// <summary>
     /// 接送机司机
     /// </summary>
-    public IdentityUserDto Driver { get; set; } = null!;
+    public IdentityUserDto? Driver { get; set; }
 
-    /// <summary>
-    /// 送车司机称呼
-    /// </summary>
-    public string DriverName => string.IsNullOrWhiteSpace(Driver?.Name) ? Driver?.UserName ?? string.Empty : Driver.Name!;
+    public string? DriverName => Driver?.UserName;
 }

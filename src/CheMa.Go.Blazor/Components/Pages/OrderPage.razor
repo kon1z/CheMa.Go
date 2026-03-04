@@ -96,6 +96,9 @@
                                           Text="@L["Edit"]"
                                           Clicked="() => OpenEditModalAsync(context)" />
                             <EntityAction TItem="OrderDto"
+                                          Text="@L["DispatchVehicle"]"
+                                          Clicked="() => OpenDispatchVehicleModalAsync(context)" />
+                            <EntityAction TItem="OrderDto"
                                           Text="@L["Delete"]"
                                           Clicked="() => DeleteEntityAsync(context)"
                                           ConfirmationMessage="() => GetDeleteConfirmationMessage(context)" />
@@ -220,6 +223,41 @@
                         Type="@ButtonType.Submit"
                         PreventDefaultOnSubmit="true"
                         Clicked="CreateEntityAsync">
+                    @L["Save"]
+                </Button>
+            </ModalFooter>
+        </Form>
+    </ModalContent>
+</Modal>
+
+<Modal @ref="@DispatchVehicleModal">
+    <ModalContent IsCentered="true">
+        <Form>
+            <ModalHeader>
+                <ModalTitle>@L["DispatchVehicle"]</ModalTitle>
+                <CloseButton Clicked="CloseDispatchVehicleModalAsync" />
+            </ModalHeader>
+            <ModalBody>
+                <Field>
+                    <FieldLabel>@L["VehicleDto:LicenseNum"]</FieldLabel>
+                    <Select TValue="long" @bind-SelectedValue="SelectedVehicleId">
+                        <SelectItem TValue="long" Value="0">--</SelectItem>
+                        @foreach (var vehicle in DispatchVehicles)
+                        {
+                            <SelectItem TValue="long" Value="@vehicle.Id">
+                                @vehicle.LicenseNum (@vehicle.Name)
+                            </SelectItem>
+                        }
+                    </Select>
+                </Field>
+            </ModalBody>
+            <ModalFooter>
+                <Button Color="Color.Secondary"
+                        Clicked="CloseDispatchVehicleModalAsync">
+                    @L["Cancel"]
+                </Button>
+                <Button Color="Color.Primary"
+                        Clicked="DispatchVehicleToOrderAsync">
                     @L["Save"]
                 </Button>
             </ModalFooter>

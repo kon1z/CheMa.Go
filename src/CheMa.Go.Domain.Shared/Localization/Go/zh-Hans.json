@@ -6,6 +6,7 @@
     "Clear": "清空",
     "Delete": "删除",
     "Detail": "详细",
+    "DispatchVehicle": "排车",
     "DriverDto:Name": "司机称呼",
     "DriverDto:PhoneNumber": "司机联系方式",
     "Enum:OrderSource.0": "酒店",
@@ -63,7 +64,7 @@
     "Search": "查询",
     "Update": "修改",
     "VehicleDto:LicenseNum": "车牌号",
-    "VehicleDto:Name": "车型明称",
+    "VehicleDto:Name": "车型名称",
     "VehicleDto:SeatCount": "座位数"
   }
 }
