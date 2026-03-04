@@ -99,6 +99,9 @@
                                           Text="@L["DispatchVehicle"]"
                                           Clicked="() => OpenDispatchVehicleModalAsync(context)" />
                             <EntityAction TItem="OrderDto"
+                                          Text="@L["DispatchDriver"]"
+                                          Clicked="() => OpenDispatchDriverModalAsync(context)" />
+                            <EntityAction TItem="OrderDto"
                                           Text="@L["Delete"]"
                                           Clicked="() => DeleteEntityAsync(context)"
                                           ConfirmationMessage="() => GetDeleteConfirmationMessage(context)" />
@@ -258,6 +261,41 @@
                 </Button>
                 <Button Color="Color.Primary"
                         Clicked="DispatchVehicleToOrderAsync">
+                    @L["Save"]
+                </Button>
+            </ModalFooter>
+        </Form>
+    </ModalContent>
+</Modal>
+
+<Modal @ref="@DispatchDriverModal">
+    <ModalContent IsCentered="true">
+        <Form>
+            <ModalHeader>
+                <ModalTitle>@L["DispatchDriver"]</ModalTitle>
+                <CloseButton Clicked="CloseDispatchDriverModalAsync" />
+            </ModalHeader>
+            <ModalBody>
+                <Field>
+                    <FieldLabel>@L["IdentityUserDto:UserName"]</FieldLabel>
+                    <Select TValue="Guid" @bind-SelectedValue="SelectedDriverId">
+                        <SelectItem TValue="Guid" Value="Guid.Empty">--</SelectItem>
+                        @foreach (var driver in DispatchDrivers)
+                        {
+                            <SelectItem TValue="Guid" Value="@driver.Id">
+                                @driver.UserName
+                            </SelectItem>
+                        }
+                    </Select>
+                </Field>
+            </ModalBody>
+            <ModalFooter>
+                <Button Color="Color.Secondary"
+                        Clicked="CloseDispatchDriverModalAsync">
+                    @L["Cancel"]
+                </Button>
+                <Button Color="Color.Primary"
+                        Clicked="DispatchDriverToOrderAsync">
                     @L["Save"]
                 </Button>
             </ModalFooter>

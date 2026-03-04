@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Entities;
 using Volo.Abp.Domain.Repositories;
+using Volo.Abp.Identity;
 
 namespace CheMa.Go.Applications.AppServices
 {
@@ -15,14 +16,17 @@ namespace CheMa.Go.Applications.AppServices
     {
         private readonly IOrderRepository _orderRepository;
         private readonly IRepository<Vehicle, long> _vehicleRepository;
+        private readonly IIdentityUserRepository _identityUserRepository;
 
         public OrderAppService(
             IRepository<Order, long> repository,
             IOrderRepository orderRepository,
-            IRepository<Vehicle, long> vehicleRepository) : base(repository)
+            IRepository<Vehicle, long> vehicleRepository,
+            IIdentityUserRepository identityUserRepository) : base(repository)
         {
             _orderRepository = orderRepository;
             _vehicleRepository = vehicleRepository;
+            _identityUserRepository = identityUserRepository;
         }
 
         public async Task LinkVehicleToOrderAsync(LinkVehicleToOrderInput input)
@@ -42,6 +46,28 @@ namespace CheMa.Go.Applications.AppServices
             if (!input.VehicleId.HasValue)
             {
                 order.Vehicle = null;
+            }
+
+            await _orderRepository.UpdateAsync(order, autoSave: true);
+        }
+
+        public async Task LinkDriverToOrderAsync(LinkDriverToOrderInput input)
+        {
+            var order = await Repository.GetAsync(input.OrderId);
+
+            if (input.DriverId.HasValue)
+            {
+                var driver = await _identityUserRepository.FindAsync(input.DriverId.Value);
+                if (driver == null)
+                {
+                    throw new EntityNotFoundException(typeof(IdentityUser), input.DriverId.Value);
+                }
+            }
+
+            order.DriverId = input.DriverId;
+            if (!input.DriverId.HasValue)
+            {
+                order.Driver = null;
             }
 
             await _orderRepository.UpdateAsync(order, autoSave: true);

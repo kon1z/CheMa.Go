@@ -6,6 +6,7 @@
     "Clear": "清空",
     "Delete": "删除",
     "Detail": "详细",
+    "DispatchDriver": "排司机",
     "DispatchVehicle": "排车",
     "DriverDto:Name": "司机称呼",
     "DriverDto:PhoneNumber": "司机联系方式",

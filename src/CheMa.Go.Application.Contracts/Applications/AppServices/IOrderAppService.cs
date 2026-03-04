@@ -8,5 +8,7 @@ public interface IOrderAppService : ICrudAppService<OrderDto, long, GetListOrder
 {
     Task LinkVehicleToOrderAsync(LinkVehicleToOrderInput input);
 
+    Task LinkDriverToOrderAsync(LinkDriverToOrderInput input);
+
     Task RemovePassengerFromOrderAsync(long orderId, long passengerId);
 }
