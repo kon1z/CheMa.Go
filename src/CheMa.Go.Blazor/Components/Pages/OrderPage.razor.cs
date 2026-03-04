@@ -1,42 +1,38 @@
 using Blazorise;
 using Blazorise.Components;
+using CheMa.Go.Applications.AppServices;
 using CheMa.Go.Applications.Dtos;
 using CheMa.Go.Localization;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
-using System;
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using CheMa.Go.Applications.AppServices;
-using Volo.Abp.Identity;
 
 namespace CheMa.Go.Blazor.Components.Pages
 {
     public partial class OrderPage
     {
+        public OrderPage()
+        {
+            LocalizationResource = typeof(GoResource);
+        }
+
         [Inject]
         protected NavigationManager Navigation { get; set; } = null!;
 
         Modal LinkPassengerModal { get; set; }
 
-        private long currentOrderId;
-        private OrderDto? currentOrder;
+        private long _currentOrderId;
+        private OrderDto? _currentOrder;
 
         LinkPassengersToOrderInput LinkPassengersToOrderInput { get; set; } = new();
         string LinkedOrderName { get; set; } = string.Empty;
 
         IEnumerable<PassengerDto> FilteredPassengers { get; set; } = new List<PassengerDto>();
         int TotalPassengersCount { get; set; }
-        IEnumerable<IdentityUserDto> FilteredDrivers { get; set; } = new List<IdentityUserDto>();
-        int TotalDriversCount { get; set; }
-        Guid? SelectedDriverIdForCreate { get; set; }
-
-        public OrderPage()
-        {
-            LocalizationResource = typeof(GoResource);
-        }
+     
 
         protected override void Dispose(bool disposing)
         {
@@ -46,25 +42,6 @@ namespace CheMa.Go.Blazor.Components.Pages
         private async Task SearchOrdersAsync()
         {
             await SearchEntitiesAsync();
-        }
-
-        private async Task OnDriversReadData(AutocompleteReadDataEventArgs e)
-        {
-            if (e.CancellationToken.IsCancellationRequested)
-            {
-                return;
-            }
-
-            var userAppService = ScopedServices.GetRequiredService<IIdentityUserAppService>();
-            var result = await userAppService.GetListAsync(new GetIdentityUsersInput
-            {
-                MaxResultCount = e.VirtualizeCount,
-                SkipCount = e.VirtualizeOffset,
-                Filter = e.SearchValue
-            });
-
-            FilteredDrivers = result.Items;
-            TotalDriversCount = (int)result.TotalCount;
         }
 
         private async Task ClearOrderSearchAsync()
@@ -79,8 +56,8 @@ namespace CheMa.Go.Blazor.Components.Pages
 
         public async Task OpenLinkPassengerModalAsync(OrderDto entity)
         {
-            currentOrder = entity;
-            currentOrderId = entity.Id;
+            _currentOrder = entity;
+            _currentOrderId = entity.Id;
             LinkPassengersToOrderInput.OrderId = entity.Id;
             LinkPassengersToOrderInput.PassengerIds ??= new List<long>();
 
@@ -118,13 +95,13 @@ namespace CheMa.Go.Blazor.Components.Pages
 
         public async Task LinkPassengersToOrderAsync()
         {
-            LinkPassengersToOrderInput.OrderId = currentOrderId;
+            LinkPassengersToOrderInput.OrderId = _currentOrderId;
             await AppService.LinkPassengersToOrderAsync(LinkPassengersToOrderInput);
 
-            var orderDto = await AppService.GetListOrderPassengersAsync(currentOrderId);
-            if (currentOrder != null)
+            var orderDto = await AppService.GetListOrderPassengersAsync(_currentOrderId);
+            if (_currentOrder != null)
             {
-                currentOrder.PassengerInfos = orderDto.PassengerInfos;
+                _currentOrder.PassengerInfos = orderDto.PassengerInfos;
             }
 
             await LinkPassengerModal.Hide();

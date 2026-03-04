@@ -9,7 +9,7 @@
 @using Volo.Abp.AspNetCore.Components.Web
 @using Volo.Abp.AspNetCore.Components.Web.Theming.Layout
 @inject PageLayout PageLayout
-@inject AbpBlazorMessageLocalizerHelper<GoResource> LH
+@inject AbpBlazorMessageLocalizerHelper<GoResource> Lh
 @{
     PageLayout.Title = L["Menu:Home"];
     PageLayout.ShowToolbar = false;
@@ -194,17 +194,6 @@
                         </Select>
                     </Field>
                     <Field>
-                        <FieldLabel>@L["OrderDto:OrderStatus"]</FieldLabel>
-                        <Select TValue="OrderStatus" @bind-SelectedValue="@NewEntity.OrderStatus">
-                            @foreach (int orderStatus in Enum.GetValues(typeof(OrderStatus)))
-                            {
-                                <SelectItem TValue="OrderStatus" Value="@((OrderStatus)orderStatus)">
-                                    @L[$"Enum:OrderStatus.{orderStatus}"]
-                                </SelectItem>
-                            }
-                        </Select>
-                    </Field>
-                    <Field>
                         <FieldLabel>@L["OrderDto:OrderSource"]</FieldLabel>
                         <Select TValue="OrderSource" @bind-SelectedValue="@NewEntity.OrderSource">
                             @foreach (int orderSource in Enum.GetValues(typeof(OrderSource)))
@@ -221,23 +210,6 @@
                                     @bind-Date="NewEntity.AppointmentTime"
                                     InputMode="DateInputMode.DateTime"
                                     DisplayFormat="yyyy-MM-dd HH:mm" />
-                    </Field>
-                    <Field>
-                        <FieldLabel>@L["DriverDto:Name"]</FieldLabel>
-                        <Autocomplete TItem="IdentityUserDto"
-                                      TValue="Guid?"
-                                      Data="@FilteredDrivers"
-                                      TotalItems="TotalDriversCount"
-                                      TextField="@(user => user.UserName)"
-                                      ValueField="@(user => user.Id)"
-                                      @bind-SelectedValue="SelectedDriverIdForCreate"
-                                      Virtualize
-                                      ReadData="@OnDriversReadData"
-                                      SearchBackground="Background.White">
-                            <NotFoundContent>
-                                @string.Format(L["InputNotFound"], context)
-                            </NotFoundContent>
-                        </Autocomplete>
                     </Field>
                 </Validations>
             </ModalBody>
@@ -273,17 +245,6 @@
                             {
                                 <SelectItem TValue="OrderType" Value="@((OrderType)orderType)">
                                     @L[$"Enum:OrderType.{orderType}"]
-                                </SelectItem>
-                            }
-                        </Select>
-                    </Field>
-                    <Field>
-                        <FieldLabel>@L["OrderDto:OrderStatus"]</FieldLabel>
-                        <Select TValue="OrderStatus" @bind-SelectedValue="@EditingEntity.OrderStatus">
-                            @foreach (int orderStatus in Enum.GetValues(typeof(OrderStatus)))
-                            {
-                                <SelectItem TValue="OrderStatus" Value="@((OrderStatus)orderStatus)">
-                                    @L[$"Enum:OrderStatus.{orderStatus}"]
                                 </SelectItem>
                             }
                         </Select>

@@ -6,7 +6,7 @@
 @using Volo.Abp.AspNetCore.Components.Web
 @using Volo.Abp.AspNetCore.Components.Web.Theming.Layout
 @inject PageLayout PageLayout
-@inject AbpBlazorMessageLocalizerHelper<GoResource> LH
+@inject AbpBlazorMessageLocalizerHelper<GoResource> Lh
 @{
     PageLayout.Title = L["Menu:Home"];
     PageLayout.ShowToolbar = false;
@@ -100,7 +100,7 @@
             </ModalHeader>
             <ModalBody>
                 <Validations @ref="@CreateValidationsRef" Model="@NewEntity" ValidateOnLoad="false">
-                    <Validation MessageLocalizer="@LH.Localize">
+                    <Validation MessageLocalizer="@Lh.Localize">
                         <Field>
                             <FieldLabel>@L["PassengerDto:Name"]</FieldLabel>
                             <TextEdit @bind-Text="@NewEntity.Name">
@@ -110,7 +110,7 @@
                             </TextEdit>
                         </Field>
                     </Validation>
-                    <Validation MessageLocalizer="@LH.Localize">
+                    <Validation MessageLocalizer="@Lh.Localize">
                         <Field>
                             <FieldLabel>@L["PassengerDto:Phone"]</FieldLabel>
                             <TextEdit @bind-Text="@NewEntity.Phone">
@@ -120,7 +120,7 @@
                             </TextEdit>
                         </Field>
                     </Validation>
-                    <Validation MessageLocalizer="@LH.Localize">
+                    <Validation MessageLocalizer="@Lh.Localize">
                         <Field>
                             <FieldLabel>@L["PassengerDto:Count"]</FieldLabel>
                             <NumericEdit TValue="int" @bind-value="@NewEntity.Count">
@@ -130,7 +130,7 @@
                             </NumericEdit>
                         </Field>
                     </Validation>
-                    <Validation MessageLocalizer="@LH.Localize">
+                    <Validation MessageLocalizer="@Lh.Localize">
                         <Field>
                             <FieldLabel>@L["PassengerDto:AppointmentTime"]</FieldLabel>
                             <DatePicker @bind-Date="NewEntity.AppointmentTime" 
@@ -143,7 +143,7 @@
                             </DatePicker>
                         </Field>
                     </Validation>
-                    <Validation MessageLocalizer="@LH.Localize">
+                    <Validation MessageLocalizer="@Lh.Localize">
                         <Field>
                             <FieldLabel>@L["PassengerDto:Remark"]</FieldLabel>
                             <MemoEdit @bind-Text="@NewEntity.Remark" AutoSize />
@@ -176,7 +176,7 @@
             </ModalHeader>
             <ModalBody>
                 <Validations @ref="@EditValidationsRef" Model="@EditingEntity" ValidateOnLoad="false">
-                    <Validation MessageLocalizer="@LH.Localize">
+                    <Validation MessageLocalizer="@Lh.Localize">
                         <Field>
                             <FieldLabel>@L["PassengerDto:Name"]</FieldLabel>
                             <TextEdit @bind-Text="@EditingEntity.Name">
@@ -186,7 +186,7 @@
                             </TextEdit>
                         </Field>
                     </Validation>
-                    <Validation MessageLocalizer="@LH.Localize">
+                    <Validation MessageLocalizer="@Lh.Localize">
                         <Field>
                             <FieldLabel>@L["PassengerDto:Phone"]</FieldLabel>
                             <TextEdit @bind-Text="@EditingEntity.Phone">
@@ -196,7 +196,7 @@
                             </TextEdit>
                         </Field>
                     </Validation>
-                    <Validation MessageLocalizer="@LH.Localize">
+                    <Validation MessageLocalizer="@Lh.Localize">
                         <Field>
                             <FieldLabel>@L["PassengerDto:Count"]</FieldLabel>
                             <NumericEdit TValue="int" @bind-value="@EditingEntity.Count">
@@ -206,7 +206,7 @@
                             </NumericEdit>
                         </Field>
                     </Validation>
-                    <Validation MessageLocalizer="@LH.Localize">
+                    <Validation MessageLocalizer="@Lh.Localize">
                         <Field>
                             <FieldLabel>@L["PassengerDto:AppointmentTime"]</FieldLabel>
                             <DatePicker TValue="DateTime" @bind-Date="EditingEntity.AppointmentTime" InputMode="DateInputMode.DateTime" DisplayFormat="yyyy-MM-dd HH:mm">
@@ -216,7 +216,7 @@
                             </DatePicker>
                         </Field>
                     </Validation>
-                    <Validation MessageLocalizer="@LH.Localize">
+                    <Validation MessageLocalizer="@Lh.Localize">
                         <Field>
                             <FieldLabel>@L["PassengerDto:Remark"]</FieldLabel>
                             <MemoEdit @bind-Text="@EditingEntity.Remark" AutoSize />

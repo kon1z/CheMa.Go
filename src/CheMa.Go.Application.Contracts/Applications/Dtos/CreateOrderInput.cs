@@ -10,10 +10,6 @@ public class CreateOrderInput
     /// </summary>
     public OrderType OrderType { get; set; }
     /// <summary>
-    /// 订单状态
-    /// </summary>
-    public OrderStatus OrderStatus { get; set; }
-    /// <summary>
     /// 订单来源
     /// </summary>
     public OrderSource OrderSource { get; set; }

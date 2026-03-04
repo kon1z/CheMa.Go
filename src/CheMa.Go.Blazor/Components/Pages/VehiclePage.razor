@@ -6,7 +6,7 @@
 @using Volo.Abp.AspNetCore.Components.Web
 @using Volo.Abp.AspNetCore.Components.Web.Theming.Layout
 @inject PageLayout PageLayout
-@inject AbpBlazorMessageLocalizerHelper<GoResource> LH
+@inject AbpBlazorMessageLocalizerHelper<GoResource> Lh
 @{
     PageLayout.Title = L["Menu:Home"];
     PageLayout.ShowToolbar = false;
@@ -93,7 +93,7 @@
             </ModalHeader>
             <ModalBody>
                 <Validations @ref="@CreateValidationsRef" Model="@NewEntity" ValidateOnLoad="false">
-                    <Validation MessageLocalizer="@LH.Localize">
+                    <Validation MessageLocalizer="@Lh.Localize">
                         <Field>
                             <FieldLabel>@L["VehicleDto:LicenseNum"]</FieldLabel>
                             <TextEdit @bind-Text="@NewEntity.LicenseNum">
@@ -103,7 +103,7 @@
                             </TextEdit>
                         </Field>
                     </Validation>
-                    <Validation MessageLocalizer="@LH.Localize">
+                    <Validation MessageLocalizer="@Lh.Localize">
                         <Field>
                             <FieldLabel>@L["VehicleDto:SeatCount"]</FieldLabel>
                             <NumericEdit TValue="int" @bind-value="@NewEntity.SeatCount">
@@ -113,7 +113,7 @@
                             </NumericEdit>
                         </Field>
                     </Validation>
-                    <Validation MessageLocalizer="@LH.Localize">
+                    <Validation MessageLocalizer="@Lh.Localize">
                         <Field>
                             <FieldLabel>@L["VehicleDto:Name"]</FieldLabel>
                             <TextEdit @bind-Text="@NewEntity.Name">
@@ -150,7 +150,7 @@
             </ModalHeader>
             <ModalBody>
                 <Validations @ref="@EditValidationsRef" Model="@EditingEntity" ValidateOnLoad="false">
-                    <Validation MessageLocalizer="@LH.Localize">
+                    <Validation MessageLocalizer="@Lh.Localize">
                         <Field>
                             <FieldLabel>@L["VehicleDto:LicenseNum"]</FieldLabel>
                             <TextEdit @bind-Text="@EditingEntity.LicenseNum">
@@ -160,7 +160,7 @@
                             </TextEdit>
                         </Field>
                     </Validation>
-                    <Validation MessageLocalizer="@LH.Localize">
+                    <Validation MessageLocalizer="@Lh.Localize">
                         <Field>
                             <FieldLabel>@L["VehicleDto:SeatCount"]</FieldLabel>
                             <NumericEdit TValue="int" @bind-value="@EditingEntity.SeatCount">
@@ -170,7 +170,7 @@
                             </NumericEdit>
                         </Field>
                     </Validation>
-                    <Validation MessageLocalizer="@LH.Localize">
+                    <Validation MessageLocalizer="@Lh.Localize">
                         <Field>
                             <FieldLabel>@L["VehicleDto:Name"]</FieldLabel>
                             <TextEdit @bind-Text="@EditingEntity.Name">

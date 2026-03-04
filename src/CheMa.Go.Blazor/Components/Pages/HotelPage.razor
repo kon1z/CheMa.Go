@@ -7,7 +7,7 @@
 @using Volo.Abp.AspNetCore.Components.Web.Theming.Layout
 @using Volo.Abp.Identity
 @inject PageLayout PageLayout
-@inject AbpBlazorMessageLocalizerHelper<GoResource> LH
+@inject AbpBlazorMessageLocalizerHelper<GoResource> Lh
 @{
     PageLayout.Title = L["Menu:Home"];
     PageLayout.ShowToolbar = false;
@@ -142,7 +142,7 @@
             </ModalHeader>
             <ModalBody>
                 <Validations @ref="@EditValidationsRef" Model="@EditingEntity" ValidateOnLoad="false">
-                    <Validation MessageLocalizer="@LH.Localize">
+                    <Validation MessageLocalizer="@Lh.Localize">
                         <Field>
                             <FieldLabel>@L["HotelDto:Name"]</FieldLabel>
                             <TextEdit @bind-Text="@EditingEntity.Name">

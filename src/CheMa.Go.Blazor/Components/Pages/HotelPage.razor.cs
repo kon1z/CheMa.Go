@@ -22,8 +22,8 @@ namespace CheMa.Go.Blazor.Components.Pages
         Modal LinkUserModal { get; set; }
 
         // 当前操作的酒店 ID
-        private long currentHotelId;
-        private HotelDto? currentHotel;
+        private long _currentHotelId;
+        private HotelDto? _currentHotel;
 
         // 链接用户输入 DTO
         LinkUsersToHotelInput LinkUsersToHotelInput { get; set; } = new LinkUsersToHotelInput();
@@ -61,8 +61,8 @@ namespace CheMa.Go.Blazor.Components.Pages
         /// </summary>
         public async Task OpenLinkUserModalAsync(HotelDto entity)
         {
-            currentHotel = entity;
-            currentHotelId = entity.Id;
+            _currentHotel = entity;
+            _currentHotelId = entity.Id;
             LinkUsersToHotelInput.HotelId = entity.Id;
             LinkUsersToHotelInput.UserIds ??= new List<Guid>();
 
@@ -115,13 +115,13 @@ namespace CheMa.Go.Blazor.Components.Pages
         public async Task LinkUsersToHotelAsync()
         {
             // 确保 HotelId 正确
-            LinkUsersToHotelInput.HotelId = currentHotelId;
+            LinkUsersToHotelInput.HotelId = _currentHotelId;
 
             await AppService.LinkUsersToHotelAsync(LinkUsersToHotelInput);
-            var hotelDto = await AppService.GetListHotelUsersAsync(currentHotelId);
-            if (currentHotel != null)
+            var hotelDto = await AppService.GetListHotelUsersAsync(_currentHotelId);
+            if (_currentHotel != null)
             {
-                currentHotel.HotelUsers = hotelDto.HotelUsers;
+                _currentHotel.HotelUsers = hotelDto.HotelUsers;
             }
 
             await LinkUserModal.Hide();
