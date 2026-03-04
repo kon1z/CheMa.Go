@@ -13,8 +13,9 @@ public class CreateOrderInput
     /// 订单来源
     /// </summary>
     public OrderSource OrderSource { get; set; }
+
     /// <summary>
     /// 预约时间
     /// </summary>
-    public DateTime AppointmentTime { get; set; }
+    public DateTime AppointmentTime { get; set; } = DateTime.Today;
 }

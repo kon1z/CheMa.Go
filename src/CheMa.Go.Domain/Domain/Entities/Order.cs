@@ -1,5 +1,4 @@
 ﻿using CheMa.Go.Domain.Enums;
-using CheMa.Go.Domain.ValueObjects;
 using System;
 using System.Collections.Generic;
 using Volo.Abp.Domain.Entities.Auditing;
@@ -23,11 +22,6 @@ namespace CheMa.Go.Domain.Entities
         /// 订单来源
         /// </summary>
         public OrderSource OrderSource { get; set; }
-
-        /// <summary>
-        /// 航班信息
-        /// </summary>
-        public FlightInfo? FlightInfo { get; set; }
 
         /// <summary>
         /// 预约时间
