@@ -254,7 +254,7 @@
                                        type="checkbox"
                                        checked="@SelectedPassengerIds.Contains(passenger.Id)"
                                        @onchange="@(e => OnPassengerCheckedChanged(passenger.Id, e))" />
-                                <label class="form-check-label">@passenger.Name (@passenger.Phone)</label>
+                                <label class="form-check-label">@passenger.Name-@passenger.Phone (@passenger.Count)</label>
                             </div>
                         }
                     </div>
