@@ -38,6 +38,16 @@ public class Passenger : AggregateRoot<long>
     public long? OrderId { get; set; }
 
     /// <summary>
+    /// 所属酒店
+    /// </summary>
+    public long HotelId { get; set; }
+
+    /// <summary>
+    /// 所属酒店
+    /// </summary>
+    public virtual Hotel? Hotel { get; set; }
+
+    /// <summary>
     /// 所属订单
     /// </summary>
     public virtual Order? Order { get; set; }

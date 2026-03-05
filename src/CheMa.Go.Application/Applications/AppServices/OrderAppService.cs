@@ -150,6 +150,7 @@ namespace CheMa.Go.Applications.AppServices
             var queryable = await base.CreateFilteredQueryAsync(input);
             IQueryable<Order> query = queryable.Include(x => x.Vehicle)
                 .Include(x => x.PassengerInfos)
+                    .ThenInclude(x => x.Hotel)
                 .Include(x => x.Driver);
 
             if (input.OrderType.HasValue)
@@ -160,6 +161,11 @@ namespace CheMa.Go.Applications.AppServices
             if (input.OrderId.HasValue)
             {
                 query = query.Where(x => x.Id == input.OrderId.Value);
+            }
+
+            if (input.DriverId.HasValue)
+            {
+                query = query.Where(x => x.DriverId == input.DriverId.Value);
             }
 
             if (input.OrderStatus.HasValue)

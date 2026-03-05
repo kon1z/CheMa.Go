@@ -1,0 +1,111 @@
+@page "/driver-home"
+@inherits GoComponentBase
+@using CheMa.Go.Applications.AppServices
+@using CheMa.Go.Applications.Dtos
+@using CheMa.Go.Domain.Enums
+@using CheMa.Go.Localization
+@using Volo.Abp.AspNetCore.Components.Web.Theming.Layout
+@inject PageLayout PageLayout
+
+@{
+    PageLayout.Title = L["Menu:DriverHome"];
+    PageLayout.ShowToolbar = false;
+}
+
+<Card>
+    <CardHeader>
+        <h2>@L["Menu:DriverHome"]</h2>
+    </CardHeader>
+    <CardBody>
+        <DataGrid TItem="OrderDto"
+                  Data="Orders"
+                  DetailRowTrigger="@(e => e.DetailRowTriggerType == DetailRowTriggerType.RowClick && DisplayDetailRow(e.Item))"
+                  DetailRowStartsVisible="false"
+                  ShowPager="true"
+                  PageSize="10"
+                  Responsive>
+            <DataGridColumns>
+                <DataGridColumn TItem="OrderDto" Field="@nameof(OrderDto.Id)" Caption="@L["Actions"]">
+                    <DisplayTemplate>
+                        <Button Color="Color.Primary" Size="Size.Small" Clicked="() => OpenDispatchVehicleModalAsync(context)">
+                            @L["DispatchVehicle"]
+                        </Button>
+                    </DisplayTemplate>
+                </DataGridColumn>
+                <DataGridColumn TItem="OrderDto" Field="@nameof(OrderDto.Id)" Caption="@L["OrderDto:Id"]" />
+                <DataGridColumn TItem="OrderDto" Field="@nameof(OrderDto.OrderType)" Caption="@L["OrderDto:OrderType"]">
+                    <DisplayTemplate>
+                        @L[$"Enum:OrderType.{context.OrderType:D}"]
+                    </DisplayTemplate>
+                </DataGridColumn>
+                <DataGridColumn TItem="OrderDto" Field="@nameof(OrderDto.OrderStatus)" Caption="@L["OrderDto:OrderStatus"]">
+                    <DisplayTemplate>
+                        @L[$"Enum:OrderStatus.{context.OrderStatus:D}"]
+                    </DisplayTemplate>
+                </DataGridColumn>
+                <DataGridColumn TItem="OrderDto" Field="@nameof(OrderDto.AppointmentTime)" Caption="@L["OrderDto:AppointmentTime"]">
+                    <DisplayTemplate>
+                        @context.AppointmentTime.ToString("G")
+                    </DisplayTemplate>
+                </DataGridColumn>
+                <DataGridColumn TItem="OrderDto" Field="Vehicle.LicenseNum" Caption="@L["VehicleDto:LicenseNum"]" />
+                <DataGridColumn TItem="OrderDto" Field="@nameof(OrderDto.DriverName)" Caption="@L["OrderDto:DriverName"]" />
+            </DataGridColumns>
+            <DetailRowTemplate>
+                <DataGrid TItem="PassengerDto"
+                          Data="context.PassengerInfos"
+                          Sortable="false"
+                          ShowCaptions="true"
+                          Responsive>
+                    <DataGridColumn TItem="PassengerDto" Field="Hotel.Name" Caption="@L["HotelDto:Name"]">
+                        <DisplayTemplate Context="passenger">
+                            @passenger.Hotel?.Name
+                        </DisplayTemplate>
+                    </DataGridColumn>
+                    <DataGridColumn TItem="PassengerDto" Field="@nameof(PassengerDto.Name)" Caption="@L["PassengerDto:Name"]" />
+                    <DataGridColumn TItem="PassengerDto" Field="@nameof(PassengerDto.Phone)" Caption="@L["PassengerDto:Phone"]" />
+                    <DataGridColumn TItem="PassengerDto" Field="@nameof(PassengerDto.Count)" Caption="@L["PassengerDto:Count"]" />
+                    <DataGridColumn TItem="PassengerDto" Field="@nameof(PassengerDto.AppointmentTime)" Caption="@L["PassengerDto:AppointmentTime"]">
+                        <DisplayTemplate Context="passenger">
+                            @passenger.AppointmentTime.ToString("G")
+                        </DisplayTemplate>
+                    </DataGridColumn>
+                    <DataGridColumn TItem="PassengerDto" Field="@nameof(PassengerDto.Remark)" Caption="@L["PassengerDto:Remark"]" />
+                </DataGrid>
+            </DetailRowTemplate>
+        </DataGrid>
+    </CardBody>
+</Card>
+
+<Modal @ref="@DispatchVehicleModal">
+    <ModalContent IsCentered="true">
+        <Form>
+            <ModalHeader>
+                <ModalTitle>@L["DispatchVehicle"]</ModalTitle>
+                <CloseButton Clicked="CloseDispatchVehicleModalAsync" />
+            </ModalHeader>
+            <ModalBody>
+                <Field>
+                    <FieldLabel>@L["VehicleDto:LicenseNum"]</FieldLabel>
+                    <Select TValue="long" @bind-SelectedValue="SelectedVehicleId">
+                        <SelectItem TValue="long" Value="0">--</SelectItem>
+                        @foreach (var vehicle in DispatchVehicles)
+                        {
+                            <SelectItem TValue="long" Value="@vehicle.Id">
+                                @vehicle.LicenseNum (@vehicle.Name)
+                            </SelectItem>
+                        }
+                    </Select>
+                </Field>
+            </ModalBody>
+            <ModalFooter>
+                <Button Color="Color.Secondary" Clicked="CloseDispatchVehicleModalAsync">
+                    @L["Cancel"]
+                </Button>
+                <Button Color="Color.Primary" Clicked="DispatchVehicleToOrderAsync">
+                    @L["Save"]
+                </Button>
+            </ModalFooter>
+        </Form>
+    </ModalContent>
+</Modal>

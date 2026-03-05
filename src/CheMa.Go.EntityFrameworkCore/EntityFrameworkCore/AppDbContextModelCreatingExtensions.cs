@@ -45,6 +45,8 @@ public static class AppDbContextModelCreatingExtensions
             b.Property(x => x.Phone).IsRequired().HasMaxLength(15);
             b.Property(x => x.Remark).IsRequired().HasMaxLength(255);
 
+            b.HasOne(x => x.Hotel).WithMany(x => x.Passengers).HasForeignKey(x => x.HotelId);
+
             b.ApplyObjectExtensionMappings();
         });
 

@@ -36,6 +36,17 @@ public class GoMenuContributor : IMenuContributor
         context.Menu.Items.Insert(
             1,
             new ApplicationMenuItem(
+                GoMenus.DriverHome,
+                l["Menu:DriverHome"],
+                "/driver-home",
+                icon: "fas fa-home",
+                order: 1
+            )
+        );
+
+        context.Menu.Items.Insert(
+            2,
+            new ApplicationMenuItem(
                 GoMenus.Passengers,
                 l["Menu:PassengerManagement"],
                 "/passengers",
@@ -45,7 +56,7 @@ public class GoMenuContributor : IMenuContributor
         );
 
         context.Menu.Items.Insert(
-            2,
+            3,
             new ApplicationMenuItem(
                 GoMenus.Orders,
                 l["Menu:OrderManagement"],
@@ -56,7 +67,7 @@ public class GoMenuContributor : IMenuContributor
         );
 
         context.Menu.Items.Insert(
-            3,
+            4,
             new ApplicationMenuItem(
                 GoMenus.Vehicles,
                 l["Menu:VehicleManagement"],
@@ -67,7 +78,7 @@ public class GoMenuContributor : IMenuContributor
         );
 
         context.Menu.Items.Insert(
-            4,
+            5,
             new ApplicationMenuItem(
                 GoMenus.Hotels,
                 l["Menu:HotelManagement"],

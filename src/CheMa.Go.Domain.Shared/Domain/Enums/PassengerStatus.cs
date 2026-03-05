@@ -11,6 +11,10 @@ public enum PassengerStatus
     /// </summary>
     Dispatched,
     /// <summary>
+    /// 已上车
+    /// </summary>
+    Boarded,
+    /// <summary>
     /// 接送完成
     /// </summary>
     Completed,

@@ -168,6 +168,11 @@
                             <Button Color="Color.Danger" Size="Size.Small" Clicked="() => RemovePassengerFromOrderAsync(passenger, context)">@L["Delete"]</Button>
                         </DisplayTemplate>
                     </DataGridColumn>
+                    <DataGridColumn Field="Hotel.Name" Caption="@L["HotelDto:Name"]">
+                        <DisplayTemplate Context="passenger">
+                            @passenger.Hotel?.Name
+                        </DisplayTemplate>
+                    </DataGridColumn>
                     <DataGridColumn Field="@nameof(PassengerDto.Name)" Caption="@L["PassengerDto:Name"]" />
                     <DataGridColumn Field="@nameof(PassengerDto.Phone)" Caption="@L["PassengerDto:Phone"]" />
                     <DataGridColumn Field="@nameof(PassengerDto.Count)" Caption="@L["PassengerDto:Count"]" />

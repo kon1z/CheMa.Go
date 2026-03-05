@@ -15,5 +15,10 @@ namespace CheMa.Go.Domain.Entities
         /// 酒店员工
         /// </summary>
         public virtual IList<IdentityUser> HotelUsers { get; set; } = new List<IdentityUser>();
+
+        /// <summary>
+        /// 所属乘客
+        /// </summary>
+        public virtual IList<Passenger> Passengers { get; set; } = new List<Passenger>();
     }
 }
