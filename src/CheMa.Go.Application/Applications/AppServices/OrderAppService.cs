@@ -2,6 +2,7 @@ using CheMa.Go.Applications.Dtos;
 using CheMa.Go.Domain.Entities;
 using CheMa.Go.Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Volo.Abp.Application.Services;
@@ -16,17 +17,57 @@ namespace CheMa.Go.Applications.AppServices
     {
         private readonly IOrderRepository _orderRepository;
         private readonly IRepository<Vehicle, long> _vehicleRepository;
+        private readonly IRepository<Passenger, long> _passengerRepository;
         private readonly IIdentityUserRepository _identityUserRepository;
 
         public OrderAppService(
             IRepository<Order, long> repository,
             IOrderRepository orderRepository,
             IRepository<Vehicle, long> vehicleRepository,
+            IRepository<Passenger, long> passengerRepository,
             IIdentityUserRepository identityUserRepository) : base(repository)
         {
             _orderRepository = orderRepository;
             _vehicleRepository = vehicleRepository;
+            _passengerRepository = passengerRepository;
             _identityUserRepository = identityUserRepository;
+        }
+
+        public async Task LinkPassengersToOrderAsync(LinkPassengersToOrderInput input)
+        {
+            var queryable = await _orderRepository.WithDetailsAsync();
+            var order = await AsyncExecuter.FirstOrDefaultAsync(
+                queryable.Include(x => x.PassengerInfos),
+                x => x.Id == input.OrderId);
+
+            if (order == null)
+            {
+                throw new EntityNotFoundException(typeof(Order), input.OrderId);
+            }
+
+            var selectedPassengerIds = input.PassengerIds.Distinct().ToList();
+            var passengers = selectedPassengerIds.Count == 0
+                ? new List<Passenger>()
+                : await _passengerRepository.GetListAsync(x => selectedPassengerIds.Contains(x.Id));
+
+            var removePassengers = order.PassengerInfos
+                .Where(x => !selectedPassengerIds.Contains(x.Id))
+                .ToList();
+
+            foreach (var removePassenger in removePassengers)
+            {
+                order.PassengerInfos.Remove(removePassenger);
+            }
+
+            foreach (var passenger in passengers)
+            {
+                if (order.PassengerInfos.All(x => x.Id != passenger.Id))
+                {
+                    order.PassengerInfos.Add(passenger);
+                }
+            }
+
+            await _orderRepository.UpdateAsync(order, autoSave: true);
         }
 
         public async Task LinkVehicleToOrderAsync(LinkVehicleToOrderInput input)

@@ -6,6 +6,8 @@ namespace CheMa.Go.Applications.AppServices;
 
 public interface IOrderAppService : ICrudAppService<OrderDto, long, GetListOrderInput, CreateOrderInput, UpdateOrderInput>
 {
+    Task LinkPassengersToOrderAsync(LinkPassengersToOrderInput input);
+
     Task LinkVehicleToOrderAsync(LinkVehicleToOrderInput input);
 
     Task LinkDriverToOrderAsync(LinkDriverToOrderInput input);

@@ -27,13 +27,19 @@ namespace CheMa.Go.Blazor.Components.Pages
         [Inject]
         protected IIdentityUserAppService IdentityUserAppService { get; set; } = null!;
 
+        [Inject]
+        protected IPassengerAppService PassengerAppService { get; set; } = null!;
+
+        Modal AddPassengerModal { get; set; } = null!;
         Modal DispatchVehicleModal { get; set; } = null!;
         Modal DispatchDriverModal { get; set; } = null!;
+        List<PassengerDto> PassengersForOrder { get; set; } = new();
         List<VehicleDto> DispatchVehicles { get; set; } = new();
         List<IdentityUserDto> DispatchDrivers { get; set; } = new();
         OrderDto? DispatchOrder { get; set; }
         long SelectedVehicleId { get; set; }
         Guid SelectedDriverId { get; set; }
+        List<long> SelectedPassengerIds { get; set; } = new();
 
         protected override void Dispose(bool disposing)
         {
@@ -64,6 +70,66 @@ namespace CheMa.Go.Blazor.Components.Pages
         {
             await AppService.RemovePassengerFromOrderAsync(order.Id, passenger.Id);
             order.PassengerInfos.RemoveAll(x => x.Id == passenger.Id);
+        }
+
+        private async Task OpenAddPassengerModalAsync(OrderDto order)
+        {
+            DispatchOrder = order;
+            SelectedPassengerIds = order.PassengerInfos.Select(x => x.Id).ToList();
+            var passengerResult = await PassengerAppService.GetListAsync(new GetListPassengerInput
+            {
+                MaxResultCount = 1000
+            });
+            PassengersForOrder = passengerResult.Items.ToList();
+            await AddPassengerModal.Show();
+        }
+
+        private async Task CloseAddPassengerModalAsync()
+        {
+            await AddPassengerModal.Hide();
+        }
+
+        private async Task AddPassengersToOrderAsync()
+        {
+            if (DispatchOrder == null)
+            {
+                return;
+            }
+
+            await AppService.LinkPassengersToOrderAsync(new LinkPassengersToOrderInput
+            {
+                OrderId = DispatchOrder.Id,
+                PassengerIds = SelectedPassengerIds
+            });
+
+            DispatchOrder.PassengerInfos = PassengersForOrder
+                .Where(x => SelectedPassengerIds.Contains(x.Id))
+                .ToList();
+
+            await AddPassengerModal.Hide();
+            await SearchEntitiesAsync();
+        }
+
+        private void TogglePassengerSelection(long passengerId, bool isChecked)
+        {
+            if (isChecked)
+            {
+                if (!SelectedPassengerIds.Contains(passengerId))
+                {
+                    SelectedPassengerIds.Add(passengerId);
+                }
+                return;
+            }
+
+            SelectedPassengerIds.Remove(passengerId);
+        }
+
+        private void OnPassengerCheckedChanged(long passengerId, ChangeEventArgs args)
+        {
+            var isChecked = args.Value is bool boolValue
+                ? boolValue
+                : bool.TryParse(args.Value?.ToString(), out var parsed) && parsed;
+            TogglePassengerSelection(passengerId, isChecked);
         }
 
         private async Task OpenDispatchVehicleModalAsync(OrderDto order)

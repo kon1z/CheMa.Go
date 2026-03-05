@@ -102,6 +102,9 @@
                                           Text="@L["DispatchDriver"]"
                                           Clicked="() => OpenDispatchDriverModalAsync(context)" />
                             <EntityAction TItem="OrderDto"
+                                          Text="@L["AddPassenger"]"
+                                          Clicked="() => OpenAddPassengerModalAsync(context)" />
+                            <EntityAction TItem="OrderDto"
                                           Text="@L["Delete"]"
                                           Clicked="() => DeleteEntityAsync(context)"
                                           ConfirmationMessage="() => GetDeleteConfirmationMessage(context)" />
@@ -226,6 +229,44 @@
                         Type="@ButtonType.Submit"
                         PreventDefaultOnSubmit="true"
                         Clicked="CreateEntityAsync">
+                    @L["Save"]
+                </Button>
+            </ModalFooter>
+        </Form>
+    </ModalContent>
+</Modal>
+
+<Modal @ref="@AddPassengerModal">
+    <ModalContent IsCentered="true">
+        <Form>
+            <ModalHeader>
+                <ModalTitle>@L["AddPassenger"]</ModalTitle>
+                <CloseButton Clicked="CloseAddPassengerModalAsync" />
+            </ModalHeader>
+            <ModalBody>
+                <Field>
+                    <FieldLabel>@L["PassengerDto:Name"]</FieldLabel>
+                    <div style="max-height: 320px; overflow-y: auto; border: 1px solid #dee2e6; border-radius: 0.375rem; padding: 0.75rem;">
+                        @foreach (var passenger in PassengersForOrder)
+                        {
+                            <div class="form-check mb-2">
+                                <input class="form-check-input"
+                                       type="checkbox"
+                                       checked="@SelectedPassengerIds.Contains(passenger.Id)"
+                                       @onchange="@(e => OnPassengerCheckedChanged(passenger.Id, e))" />
+                                <label class="form-check-label">@passenger.Name (@passenger.Phone)</label>
+                            </div>
+                        }
+                    </div>
+                </Field>
+            </ModalBody>
+            <ModalFooter>
+                <Button Color="Color.Secondary"
+                        Clicked="CloseAddPassengerModalAsync">
+                    @L["Cancel"]
+                </Button>
+                <Button Color="Color.Primary"
+                        Clicked="AddPassengersToOrderAsync">
                     @L["Save"]
                 </Button>
             </ModalFooter>
