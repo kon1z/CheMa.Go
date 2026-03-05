@@ -1,10 +1,15 @@
-﻿using System;
+﻿using CheMa.Go.Domain.Enums;
+using System;
 using Volo.Abp.Application.Dtos;
 
 namespace CheMa.Go.Applications.Dtos
 {
     public class PassengerDto : EntityDto<long>
     {
+        /// <summary>
+        /// 乘客接送状态
+        /// </summary>
+        public PassengerStatus Status { get; set; }
         /// <summary>
         /// 乘客称呼
         /// </summary>
@@ -21,6 +26,10 @@ namespace CheMa.Go.Applications.Dtos
         /// 预约时间
         /// </summary>
         public DateTime AppointmentTime { get; set; }
+        /// <summary>
+        /// 关联订单Id
+        /// </summary>
+        public long? OrderId { get; set; }
         /// <summary>
         /// 备注
         /// </summary>

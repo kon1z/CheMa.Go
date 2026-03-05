@@ -1,5 +1,6 @@
 using CheMa.Go.Applications.Dtos;
 using CheMa.Go.Domain.Entities;
+using CheMa.Go.Domain.Enums;
 using CheMa.Go.Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
@@ -56,6 +57,8 @@ namespace CheMa.Go.Applications.AppServices
 
             foreach (var removePassenger in removePassengers)
             {
+                removePassenger.Status = PassengerStatus.PendingPickup;
+                removePassenger.OrderId = null;
                 order.PassengerInfos.Remove(removePassenger);
             }
 
@@ -65,6 +68,12 @@ namespace CheMa.Go.Applications.AppServices
                 {
                     order.PassengerInfos.Add(passenger);
                 }
+            }
+
+            foreach (var passenger in order.PassengerInfos)
+            {
+                passenger.Status = PassengerStatus.Dispatched;
+                passenger.OrderId = order.Id;
             }
 
             await _orderRepository.UpdateAsync(order, autoSave: true);
@@ -129,6 +138,8 @@ namespace CheMa.Go.Applications.AppServices
             var linkedPassenger = order.PassengerInfos.FirstOrDefault(x => x.Id == passengerId);
             if (linkedPassenger != null)
             {
+                linkedPassenger.Status = PassengerStatus.PendingPickup;
+                linkedPassenger.OrderId = null;
                 order.PassengerInfos.Remove(linkedPassenger);
                 await _orderRepository.UpdateAsync(order, autoSave: true);
             }
@@ -144,6 +155,11 @@ namespace CheMa.Go.Applications.AppServices
             if (input.OrderType.HasValue)
             {
                 query = query.Where(x => x.OrderType == input.OrderType.Value);
+            }
+
+            if (input.OrderId.HasValue)
+            {
+                query = query.Where(x => x.Id == input.OrderId.Value);
             }
 
             if (input.OrderStatus.HasValue)

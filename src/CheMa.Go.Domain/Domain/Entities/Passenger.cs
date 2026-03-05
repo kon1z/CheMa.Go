@@ -1,10 +1,16 @@
 ﻿using System;
+using CheMa.Go.Domain.Enums;
 using Volo.Abp.Domain.Entities;
 
 namespace CheMa.Go.Domain.Entities;
 
 public class Passenger : AggregateRoot<long>
 {
+    /// <summary>
+    /// 乘客接送状态
+    /// </summary>
+    public PassengerStatus Status { get; set; }
+
     /// <summary>
     /// 乘客称呼
     /// </summary>

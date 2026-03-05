@@ -1,9 +1,15 @@
 ﻿using System;
+using CheMa.Go.Domain.Enums;
 
 namespace CheMa.Go.Applications.Dtos;
 
 public class UpdatePassengerInput
 {
+    /// <summary>
+    /// 乘客接送状态
+    /// </summary>
+    public PassengerStatus Status { get; set; }
+
     /// <summary>
     /// 乘客称呼
     /// </summary>

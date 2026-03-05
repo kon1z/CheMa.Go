@@ -28,6 +28,8 @@ namespace CheMa.Go.Blazor.Components.Pages
         {
             GetListInput.Name = null;
             GetListInput.Phone = null;
+            GetListInput.Status = null;
+            GetListInput.OrderId = null;
             await SearchEntitiesAsync();
         }
     }

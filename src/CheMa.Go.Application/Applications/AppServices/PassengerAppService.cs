@@ -29,6 +29,16 @@ namespace CheMa.Go.Applications.AppServices
                 query = query.Where(x => x.Phone.Contains(input.Phone));
             }
 
+            if (input.Status.HasValue)
+            {
+                query = query.Where(x => x.Status == input.Status.Value);
+            }
+
+            if (input.OrderId.HasValue)
+            {
+                query = query.Where(x => x.OrderId == input.OrderId.Value);
+            }
+
             return query;
         }
     }

@@ -3,6 +3,7 @@
 @using CheMa.Go.Localization
 @using CheMa.Go.Applications.AppServices
 @using CheMa.Go.Applications.Dtos
+@using CheMa.Go.Domain.Enums
 @using Volo.Abp.AspNetCore.Components.Web
 @using Volo.Abp.AspNetCore.Components.Web.Theming.Layout
 @inject PageLayout PageLayout
@@ -29,6 +30,22 @@
             <Field>
                 <FieldLabel>@L["PassengerDto:Phone"]</FieldLabel>
                 <TextEdit @bind-Text="GetListInput.Phone"></TextEdit>
+            </Field>
+            <Field>
+                <FieldLabel>@L["PassengerDto:Status"]</FieldLabel>
+                <Select TValue="PassengerStatus ?" @bind-SelectedValue="GetListInput.Status">
+                    <SelectItem TValue="PassengerStatus?" Value="@((PassengerStatus?)null)">--</SelectItem>
+                    @foreach (int status in Enum.GetValues(typeof(PassengerStatus)))
+                    {
+                        <SelectItem TValue="PassengerStatus?" Value="@((PassengerStatus)status)">
+                            @L[$"Enum:PassengerStatus.{status}"]
+                        </SelectItem>
+                    }
+                </Select>
+            </Field>
+            <Field>
+                <FieldLabel>@L["OrderDto:Id"]</FieldLabel>
+                <NumericEdit TValue="long?" @bind-value="GetListInput.OrderId" />
             </Field>
             <div class="d-flex justify-content-end gap-2" style="align-self: end;">
                 <Button Color="Color.Primary" Clicked="OpenCreateModalAsync">
@@ -68,6 +85,13 @@
                                 Caption="@L["PassengerDto:Name"]">
                 </DataGridColumn>
                 <DataGridColumn TItem="PassengerDto"
+                                Field="@nameof(PassengerDto.Status)"
+                                Caption="@L["PassengerDto:Status"]">
+                    <DisplayTemplate>
+                        @L[$"Enum:PassengerStatus.{context.Status:D}"]
+                    </DisplayTemplate>
+                </DataGridColumn>
+                <DataGridColumn TItem="PassengerDto"
                                 Field="@nameof(PassengerDto.Phone)"
                                 Caption="@L["PassengerDto:Phone"]">
                 </DataGridColumn>
@@ -80,6 +104,17 @@
                                 Caption="@L["PassengerDto:AppointmentTime"]">
                     <DisplayTemplate>
                         @context.AppointmentTime.ToString("G")
+                    </DisplayTemplate>
+                </DataGridColumn>
+
+                <DataGridColumn TItem="PassengerDto"
+                                Field="@nameof(PassengerDto.OrderId)"
+                                Caption="@L["OrderDto:Id"]">
+                    <DisplayTemplate>
+                        @if (context.OrderId.HasValue)
+                        {
+                            <a href="@($"/orders?orderId={context.OrderId.Value}")">@context.OrderId.Value</a>
+                        }
                     </DisplayTemplate>
                 </DataGridColumn>
                 <DataGridColumn TItem="PassengerDto"
@@ -132,9 +167,22 @@
                     </Validation>
                     <Validation MessageLocalizer="@Lh.Localize">
                         <Field>
+                            <FieldLabel>@L["PassengerDto:Status"]</FieldLabel>
+                            <Select TValue="PassengerStatus" @bind-SelectedValue="@NewEntity.Status">
+                                @foreach (int status in Enum.GetValues(typeof(PassengerStatus)))
+                                {
+                                    <SelectItem TValue="PassengerStatus" Value="@((PassengerStatus)status)">
+                                        @L[$"Enum:PassengerStatus.{status}"]
+                                    </SelectItem>
+                                }
+                            </Select>
+                        </Field>
+                    </Validation>
+                    <Validation MessageLocalizer="@Lh.Localize">
+                        <Field>
                             <FieldLabel>@L["PassengerDto:AppointmentTime"]</FieldLabel>
-                            <DatePicker @bind-Date="NewEntity.AppointmentTime" 
-                                        InputMode="DateInputMode.DateTime" 
+                            <DatePicker @bind-Date="NewEntity.AppointmentTime"
+                                        InputMode="DateInputMode.DateTime"
                                         TimeAs24hr="true"
                                         TValue="DateTime">
                                 <Feedback>
@@ -204,6 +252,19 @@
                                     <ValidationError />
                                 </Feedback>
                             </NumericEdit>
+                        </Field>
+                    </Validation>
+                    <Validation MessageLocalizer="@Lh.Localize">
+                        <Field>
+                            <FieldLabel>@L["PassengerDto:Status"]</FieldLabel>
+                            <Select TValue="PassengerStatus" @bind-SelectedValue="@EditingEntity.Status">
+                                @foreach (int status in Enum.GetValues(typeof(PassengerStatus)))
+                                {
+                                    <SelectItem TValue="PassengerStatus" Value="@((PassengerStatus)status)">
+                                        @L[$"Enum:PassengerStatus.{status}"]
+                                    </SelectItem>
+                                }
+                            </Select>
                         </Field>
                     </Validation>
                     <Validation MessageLocalizer="@Lh.Localize">

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System;
 using CheMa.Go.Applications.Dtos;
 using CheMa.Go.Applications.AppServices;
+using CheMa.Go.Domain.Enums;
 using CheMa.Go.Localization;
 using Microsoft.AspNetCore.Components;
 using System.Linq;
@@ -30,6 +31,10 @@ namespace CheMa.Go.Blazor.Components.Pages
         [Inject]
         protected IPassengerAppService PassengerAppService { get; set; } = null!;
 
+        [Parameter]
+        [SupplyParameterFromQuery(Name = "orderId")]
+        public long? QueryOrderId { get; set; }
+
         Modal AddPassengerModal { get; set; } = null!;
         Modal DispatchVehicleModal { get; set; } = null!;
         Modal DispatchDriverModal { get; set; } = null!;
@@ -40,6 +45,21 @@ namespace CheMa.Go.Blazor.Components.Pages
         long SelectedVehicleId { get; set; }
         Guid SelectedDriverId { get; set; }
         List<long> SelectedPassengerIds { get; set; } = new();
+        long? LastQueryOrderId { get; set; }
+
+        protected override async Task OnParametersSetAsync()
+        {
+            await base.OnParametersSetAsync();
+
+            if (QueryOrderId == LastQueryOrderId)
+            {
+                return;
+            }
+
+            LastQueryOrderId = QueryOrderId;
+            GetListInput.OrderId = QueryOrderId;
+            await SearchEntitiesAsync();
+        }
 
         protected override void Dispose(bool disposing)
         {
@@ -53,6 +73,7 @@ namespace CheMa.Go.Blazor.Components.Pages
 
         private async Task ClearOrderSearchAsync()
         {
+            GetListInput.OrderId = null;
             GetListInput.OrderType = null;
             GetListInput.OrderStatus = null;
             GetListInput.AppointmentStartTime = null;
@@ -78,6 +99,7 @@ namespace CheMa.Go.Blazor.Components.Pages
             SelectedPassengerIds = order.PassengerInfos.Select(x => x.Id).ToList();
             var passengerResult = await PassengerAppService.GetListAsync(new GetListPassengerInput
             {
+                Status = PassengerStatus.PendingPickup,
                 MaxResultCount = 1000
             });
             PassengersForOrder = passengerResult.Items.ToList();

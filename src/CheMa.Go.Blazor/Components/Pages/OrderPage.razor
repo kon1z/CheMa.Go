@@ -24,6 +24,10 @@
     <CardBody>
         <div class="mb-3 d-grid gap-2" style="grid-template-columns: repeat(3, minmax(0, 1fr));">
             <Field>
+                <FieldLabel>@L["OrderDto:Id"]</FieldLabel>
+                <NumericEdit TValue="long?" @bind-value="GetListInput.OrderId" />
+            </Field>
+            <Field>
                 <FieldLabel>@L["OrderDto:OrderType"]</FieldLabel>
                 <Select TValue="OrderType ?" @bind-SelectedValue="GetListInput.OrderType">
                     <SelectItem TValue="OrderType?" Value="@((OrderType?)null)">--</SelectItem>
