@@ -94,7 +94,7 @@
                 <DataGridEntityActionsColumn TItem="OrderDto" @ref="@EntityActionsColumn">
                     <DisplayTemplate>
                         <EntityActions TItem="OrderDto" EntityActionsColumn="@EntityActionsColumn">
-                            @if (IsPendingOrder(context))
+                            @if (IsDispatchEditable(context))
                             {
                                 <EntityAction TItem="OrderDto"
                                               Text="@L["Edit"]"
@@ -108,9 +108,12 @@
                                 <EntityAction TItem="OrderDto"
                                               Text="@L["AddPassenger"]"
                                               Clicked="() => OpenAddPassengerModalAsync(context)" />
-                                <EntityAction TItem="OrderDto"
-                                              Text="@L["Order:ConfirmDispatch"]"
-                                              Clicked="() => ConfirmDispatchAsync(context)" />
+                                @if (IsPendingOrder(context))
+                                {
+                                    <EntityAction TItem="OrderDto"
+                                                  Text="@L["Order:ConfirmDispatch"]"
+                                                  Clicked="() => ConfirmDispatchAsync(context)" />
+                                }
                             }
                             <EntityAction TItem="OrderDto"
                                           Text="@L["Delete"]"

@@ -118,6 +118,11 @@ namespace CheMa.Go.Blazor.Components.Pages
             return order.OrderStatus == OrderStatus.Pending;
         }
 
+        private static bool IsDispatchEditable(OrderDto order)
+        {
+            return order.OrderStatus == OrderStatus.Pending || order.OrderStatus == OrderStatus.Dispatched;
+        }
+
         private async Task RemovePassengerFromOrderAsync(PassengerDto passenger, OrderDto order)
         {
             await AppService.RemovePassengerFromOrderAsync(order.Id, passenger.Id);

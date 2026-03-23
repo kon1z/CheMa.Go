@@ -43,6 +43,8 @@ namespace CheMa.Go.Applications.AppServices
         public async Task LinkPassengersToOrderAsync(LinkPassengersToOrderInput input)
         {
             var order = await GetOrderWithPassengersAsync(input.OrderId);
+            EnsureDispatchEditable(order);
+
             var selectedPassengerIds = input.PassengerIds.Distinct().ToList();
             var passengers = selectedPassengerIds.Count == 0
                 ? new List<Passenger>()
@@ -71,8 +73,10 @@ namespace CheMa.Go.Applications.AppServices
 
             foreach (var passenger in order.PassengerInfos)
             {
-                passenger.Status = PassengerStatus.Dispatched;
                 passenger.OrderId = order.Id;
+                passenger.Status = order.OrderStatus == OrderStatus.Pending
+                    ? PassengerStatus.PendingPickup
+                    : PassengerStatus.Dispatched;
             }
 
             await _orderRepository.UpdateAsync(order, autoSave: true);
@@ -110,14 +114,96 @@ namespace CheMa.Go.Applications.AppServices
         [Authorize(GoPermissions.Orders.ConfirmDispatch)]
         public async Task ConfirmDispatchAsync(long orderId)
         {
+            var order = await GetOrderWithPassengersAsync(orderId);
+            if (!order.DriverId.HasValue || !order.VehicleId.HasValue || order.PassengerInfos.Count == 0)
+            {
+                throw new UserFriendlyException(L["Order:DispatchRequirementsNotMet"]);
+            }
+
             var conflictResult = await CheckDispatchConflictsAsync(orderId);
             if (conflictResult.HasConflict)
             {
                 throw new UserFriendlyException(L["Order:DispatchConflict"]);
             }
 
-            var order = await Repository.GetAsync(orderId);
             order.OrderStatus = OrderStatus.Dispatched;
+            foreach (var passenger in order.PassengerInfos)
+            {
+                passenger.Status = PassengerStatus.Dispatched;
+            }
+
+            await _orderRepository.UpdateAsync(order, autoSave: true);
+        }
+
+        public async Task StartTripAsync(long orderId)
+        {
+            var order = await GetOrderWithPassengersAsync(orderId);
+            if (order.OrderStatus != OrderStatus.Dispatched)
+            {
+                throw new UserFriendlyException(L["Order:StartTripInvalid"]);
+            }
+
+            order.OrderStatus = OrderStatus.IsOnTheWay;
+            await _orderRepository.UpdateAsync(order, autoSave: true);
+        }
+
+        public async Task ArriveAsync(long orderId)
+        {
+            var order = await GetOrderWithPassengersAsync(orderId);
+            if (order.OrderStatus != OrderStatus.IsOnTheWay)
+            {
+                throw new UserFriendlyException(L["Order:ArriveInvalid"]);
+            }
+
+            order.OrderStatus = OrderStatus.Arrived;
+            await _orderRepository.UpdateAsync(order, autoSave: true);
+        }
+
+        public async Task RejectDispatchAsync(long orderId)
+        {
+            var order = await GetOrderWithPassengersAsync(orderId);
+            if (order.OrderStatus != OrderStatus.Dispatched)
+            {
+                throw new UserFriendlyException(L["Order:RejectInvalid"]);
+            }
+
+            order.OrderStatus = OrderStatus.Pending;
+            order.DriverId = null;
+            order.Driver = null;
+            foreach (var passenger in order.PassengerInfos)
+            {
+                passenger.Status = PassengerStatus.PendingPickup;
+            }
+
+            await _orderRepository.UpdateAsync(order, autoSave: true);
+        }
+
+        public async Task ReturnToPendingAsync(long orderId)
+        {
+            var order = await GetOrderWithPassengersAsync(orderId);
+            if (order.OrderStatus != OrderStatus.IsOnTheWay)
+            {
+                throw new UserFriendlyException(L["Order:ReturnPendingInvalid"]);
+            }
+
+            order.OrderStatus = OrderStatus.Pending;
+            foreach (var passenger in order.PassengerInfos)
+            {
+                passenger.Status = PassengerStatus.PendingPickup;
+            }
+
+            await _orderRepository.UpdateAsync(order, autoSave: true);
+        }
+
+        public async Task CompleteOrderAsync(long orderId)
+        {
+            var order = await GetOrderWithPassengersAsync(orderId);
+            if (!CanComplete(order))
+            {
+                throw new UserFriendlyException(L["Order:CompleteInvalid"]);
+            }
+
+            order.OrderStatus = OrderStatus.Completed;
             await _orderRepository.UpdateAsync(order, autoSave: true);
         }
 
@@ -130,10 +216,7 @@ namespace CheMa.Go.Applications.AppServices
             }
 
             var targetOrder = await GetOrderWithPassengersAsync(input.TargetOrderId);
-            if (targetOrder.OrderStatus != OrderStatus.Pending && targetOrder.OrderStatus != OrderStatus.Dispatched)
-            {
-                throw new UserFriendlyException(L["Order:TransferTargetInvalid"]);
-            }
+            EnsureDispatchEditable(targetOrder);
 
             var passengers = await _passengerRepository.GetListAsync(x => input.PassengerIds.Contains(x.Id));
             foreach (var passenger in passengers)
@@ -144,10 +227,7 @@ namespace CheMa.Go.Applications.AppServices
                 }
 
                 var sourceOrder = await GetOrderWithPassengersAsync(passenger.OrderId.Value);
-                if (sourceOrder.OrderStatus != OrderStatus.Pending && sourceOrder.OrderStatus != OrderStatus.Dispatched)
-                {
-                    throw new UserFriendlyException(L["Order:TransferSourceInvalid"]);
-                }
+                EnsureTransferAllowed(sourceOrder);
 
                 var linkedPassenger = sourceOrder.PassengerInfos.FirstOrDefault(x => x.Id == passenger.Id);
                 if (linkedPassenger != null)
@@ -156,7 +236,9 @@ namespace CheMa.Go.Applications.AppServices
                 }
 
                 passenger.OrderId = targetOrder.Id;
-                passenger.Status = PassengerStatus.Dispatched;
+                passenger.Status = targetOrder.OrderStatus == OrderStatus.Pending
+                    ? PassengerStatus.PendingPickup
+                    : PassengerStatus.Dispatched;
 
                 if (targetOrder.PassengerInfos.All(x => x.Id != passenger.Id))
                 {
@@ -181,7 +263,8 @@ namespace CheMa.Go.Applications.AppServices
 
         public async Task LinkVehicleToOrderAsync(LinkVehicleToOrderInput input)
         {
-            var order = await Repository.GetAsync(input.OrderId);
+            var order = await GetOrderWithPassengersAsync(input.OrderId);
+            EnsureDispatchEditable(order);
 
             if (input.VehicleId.HasValue)
             {
@@ -197,17 +280,14 @@ namespace CheMa.Go.Applications.AppServices
             {
                 order.Vehicle = null;
             }
-            else if (order.OrderStatus == OrderStatus.Dispatched)
-            {
-                order.OrderStatus = OrderStatus.IsOnTheWay;
-            }
 
             await _orderRepository.UpdateAsync(order, autoSave: true);
         }
 
         public async Task LinkDriverToOrderAsync(LinkDriverToOrderInput input)
         {
-            var order = await Repository.GetAsync(input.OrderId);
+            var order = await GetOrderWithPassengersAsync(input.OrderId);
+            EnsureDispatchEditable(order);
 
             if (input.DriverId.HasValue)
             {
@@ -230,6 +310,8 @@ namespace CheMa.Go.Applications.AppServices
         public async Task RemovePassengerFromOrderAsync(long orderId, long passengerId)
         {
             var order = await GetOrderWithPassengersAsync(orderId);
+            EnsureDispatchEditable(order);
+
             var linkedPassenger = order.PassengerInfos.FirstOrDefault(x => x.Id == passengerId);
             if (linkedPassenger != null)
             {
@@ -286,6 +368,32 @@ namespace CheMa.Go.Applications.AppServices
             return query;
         }
 
+        private static bool CanComplete(Order order)
+        {
+            if (order.OrderStatus != OrderStatus.Arrived && order.OrderStatus != OrderStatus.PartiallyPicked && order.OrderStatus != OrderStatus.Picked)
+            {
+                return false;
+            }
+
+            return order.PassengerInfos.Count > 0 && order.PassengerInfos.All(x => x.Status == PassengerStatus.Completed || x.Status == PassengerStatus.ExceptionClosed);
+        }
+
+        private static void EnsureTransferAllowed(Order order)
+        {
+            if (order.OrderStatus != OrderStatus.Pending && order.OrderStatus != OrderStatus.Dispatched)
+            {
+                throw new UserFriendlyException("当前订单状态不允许转派");
+            }
+        }
+
+        private void EnsureDispatchEditable(Order order)
+        {
+            if (order.OrderStatus != OrderStatus.Pending && order.OrderStatus != OrderStatus.Dispatched)
+            {
+                throw new UserFriendlyException(L["Order:ExecutionReadonly"]);
+            }
+        }
+
         private async Task<Order> GetOrderWithPassengersAsync(long orderId)
         {
             var queryable = await _orderRepository.WithDetailsAsync();
@@ -298,7 +406,28 @@ namespace CheMa.Go.Applications.AppServices
                 throw new EntityNotFoundException(typeof(Order), orderId);
             }
 
+            RefreshOrderStatus(order);
             return order;
+        }
+
+        private static void RefreshOrderStatus(Order order)
+        {
+            if (order.OrderStatus == OrderStatus.Arrived || order.OrderStatus == OrderStatus.PartiallyPicked || order.OrderStatus == OrderStatus.Picked)
+            {
+                var boardedCount = order.PassengerInfos.Count(x => x.Status == PassengerStatus.Boarded);
+                if (boardedCount == 0)
+                {
+                    order.OrderStatus = OrderStatus.Arrived;
+                }
+                else if (boardedCount == order.PassengerInfos.Count)
+                {
+                    order.OrderStatus = OrderStatus.Picked;
+                }
+                else
+                {
+                    order.OrderStatus = OrderStatus.PartiallyPicked;
+                }
+            }
         }
     }
 }

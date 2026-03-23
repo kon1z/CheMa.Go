@@ -16,6 +16,16 @@ public interface IOrderAppService : ICrudAppService<OrderDto, long, GetListOrder
 
     Task ConfirmDispatchAsync(long orderId);
 
+    Task StartTripAsync(long orderId);
+
+    Task ArriveAsync(long orderId);
+
+    Task RejectDispatchAsync(long orderId);
+
+    Task ReturnToPendingAsync(long orderId);
+
+    Task CompleteOrderAsync(long orderId);
+
     Task ForceTransferPassengersAsync(ForceTransferPassengerInput input);
 
     Task RemovePassengerFromOrderAsync(long orderId, long passengerId);

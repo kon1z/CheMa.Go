@@ -8,4 +8,5 @@ public interface IPassengerAppService : ICrudAppService<PassengerDto, long, GetL
 {
     Task SetBoardedAsync(long id);
     Task SetPassengerExitAsync(long id);
+    Task SetExceptionClosedAsync(long id);
 }

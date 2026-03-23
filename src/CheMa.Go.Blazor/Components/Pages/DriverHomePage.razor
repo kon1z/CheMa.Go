@@ -30,6 +30,20 @@
                     <DisplayTemplate>
                         <EntityActions TItem="OrderDto" EntityActionsColumn="@EntityActionsColumn">
                             <EntityAction TItem="OrderDto" Text="@L["DispatchVehicle"]" Clicked="() => OpenDispatchVehicleModalAsync(context)"></EntityAction>
+                            @if (context.OrderStatus == OrderStatus.Dispatched)
+                            {
+                                <EntityAction TItem="OrderDto" Text="@L["Order:StartTrip"]" Clicked="() => StartTripAsync(context)"></EntityAction>
+                                <EntityAction TItem="OrderDto" Text="@L["Order:RejectDispatch"]" Clicked="() => RejectDispatchAsync(context)"></EntityAction>
+                            }
+                            @if (context.OrderStatus == OrderStatus.IsOnTheWay)
+                            {
+                                <EntityAction TItem="OrderDto" Text="@L["Order:Arrive"]" Clicked="() => ArriveAsync(context)"></EntityAction>
+                                <EntityAction TItem="OrderDto" Text="@L["Order:ReturnToPending"]" Clicked="() => ReturnToPendingAsync(context)"></EntityAction>
+                            }
+                            @if (context.OrderStatus == OrderStatus.Arrived || context.OrderStatus == OrderStatus.PartiallyPicked || context.OrderStatus == OrderStatus.Picked)
+                            {
+                                <EntityAction TItem="OrderDto" Text="@L["Order:Complete"]" Clicked="() => CompleteOrderAsync(context)"></EntityAction>
+                            }
                         </EntityActions>
                     </DisplayTemplate>
                 </DataGridEntityActionsColumn>
@@ -81,6 +95,12 @@
                             {
                                 <Button Color="Color.Primary" Size="Size.Small" Clicked="() => SetPassengerExitAsync(passenger)">
                                     @L["Passenger:Exit"]
+                                </Button>
+                            }
+                            @if (passenger.Status == PassengerStatus.PendingPickup || passenger.Status == PassengerStatus.Dispatched)
+                            {
+                                <Button Color="Color.Warning" Size="Size.Small" Clicked="() => SetPassengerExceptionClosedAsync(passenger)">
+                                    @L["Passenger:ExceptionClosed"]
                                 </Button>
                             }
                         </DisplayTemplate>

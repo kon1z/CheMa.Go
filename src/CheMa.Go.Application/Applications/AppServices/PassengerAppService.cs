@@ -12,8 +12,11 @@ namespace CheMa.Go.Applications.AppServices
         CrudAppService<Passenger, PassengerDto, long, GetListPassengerInput, CreatePassengerInput,
             UpdatePassengerInput>, IPassengerAppService
     {
-        public PassengerAppService(IRepository<Passenger, long> repository) : base(repository)
+        private readonly IRepository<Order, long> _orderRepository;
+
+        public PassengerAppService(IRepository<Passenger, long> repository, IRepository<Order, long> orderRepository) : base(repository)
         {
+            _orderRepository = orderRepository;
         }
 
         public async Task SetBoardedAsync(long id)
@@ -21,6 +24,7 @@ namespace CheMa.Go.Applications.AppServices
             var passenger = await Repository.GetAsync(id);
             passenger.Status = PassengerStatus.Boarded;
             await Repository.UpdateAsync(passenger, autoSave: true);
+            await RefreshOrderStatusAsync(passenger.OrderId);
         }
 
         public async Task SetPassengerExitAsync(long id)
@@ -28,6 +32,15 @@ namespace CheMa.Go.Applications.AppServices
             var passenger = await Repository.GetAsync(id);
             passenger.Status = PassengerStatus.Completed;
             await Repository.UpdateAsync(passenger, autoSave: true);
+            await RefreshOrderStatusAsync(passenger.OrderId);
+        }
+
+        public async Task SetExceptionClosedAsync(long id)
+        {
+            var passenger = await Repository.GetAsync(id);
+            passenger.Status = PassengerStatus.ExceptionClosed;
+            await Repository.UpdateAsync(passenger, autoSave: true);
+            await RefreshOrderStatusAsync(passenger.OrderId);
         }
 
         protected override async Task<IQueryable<Passenger>> CreateFilteredQueryAsync(GetListPassengerInput input)
@@ -55,6 +68,42 @@ namespace CheMa.Go.Applications.AppServices
             }
 
             return query;
+        }
+
+        private async Task RefreshOrderStatusAsync(long? orderId)
+        {
+            if (!orderId.HasValue)
+            {
+                return;
+            }
+
+            var query = await _orderRepository.WithDetailsAsync(x => x.PassengerInfos);
+            var order = query.FirstOrDefault(x => x.Id == orderId.Value);
+            if (order == null)
+            {
+                return;
+            }
+
+            if (order.OrderStatus != OrderStatus.Arrived && order.OrderStatus != OrderStatus.PartiallyPicked && order.OrderStatus != OrderStatus.Picked)
+            {
+                return;
+            }
+
+            var boardedCount = order.PassengerInfos.Count(x => x.Status == PassengerStatus.Boarded);
+            if (boardedCount == 0)
+            {
+                order.OrderStatus = OrderStatus.Arrived;
+            }
+            else if (boardedCount == order.PassengerInfos.Count)
+            {
+                order.OrderStatus = OrderStatus.Picked;
+            }
+            else
+            {
+                order.OrderStatus = OrderStatus.PartiallyPicked;
+            }
+
+            await _orderRepository.UpdateAsync(order, autoSave: true);
         }
     }
 }

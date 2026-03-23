@@ -112,5 +112,41 @@ namespace CheMa.Go.Blazor.Components.Pages
             await PassengerAppService.SetPassengerExitAsync(passenger.Id);
             await LoadOrdersAsync();
         }
+
+        private async Task SetPassengerExceptionClosedAsync(PassengerDto passenger)
+        {
+            await PassengerAppService.SetExceptionClosedAsync(passenger.Id);
+            await LoadOrdersAsync();
+        }
+
+        private async Task StartTripAsync(OrderDto order)
+        {
+            await OrderAppService.StartTripAsync(order.Id);
+            await LoadOrdersAsync();
+        }
+
+        private async Task ArriveAsync(OrderDto order)
+        {
+            await OrderAppService.ArriveAsync(order.Id);
+            await LoadOrdersAsync();
+        }
+
+        private async Task RejectDispatchAsync(OrderDto order)
+        {
+            await OrderAppService.RejectDispatchAsync(order.Id);
+            await LoadOrdersAsync();
+        }
+
+        private async Task ReturnToPendingAsync(OrderDto order)
+        {
+            await OrderAppService.ReturnToPendingAsync(order.Id);
+            await LoadOrdersAsync();
+        }
+
+        private async Task CompleteOrderAsync(OrderDto order)
+        {
+            await OrderAppService.CompleteOrderAsync(order.Id);
+            await LoadOrdersAsync();
+        }
     }
 }
