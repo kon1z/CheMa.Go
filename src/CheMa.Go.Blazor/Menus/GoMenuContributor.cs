@@ -88,7 +88,16 @@ public class GoMenuContributor : IMenuContributor
             )
         );
 
-
+        context.Menu.Items.Insert(
+            6,
+            new ApplicationMenuItem(
+                GoMenus.DispatchLogs,
+                l["Menu:DispatchLogManagement"],
+                "/dispatch-logs",
+                icon: "fas fa-list",
+                order: 1
+            )
+        );
 
         //Administration
         var administration = context.Menu.GetAdministration();

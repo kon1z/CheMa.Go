@@ -1,6 +1,7 @@
 using Blazorise;
 using CheMa.Go.Applications.AppServices;
 using CheMa.Go.Applications.Dtos;
+using CheMa.Go.Domain.Enums;
 using CheMa.Go.Localization;
 using Microsoft.AspNetCore.Components;
 using System.Collections.Generic;
@@ -16,6 +17,9 @@ namespace CheMa.Go.Blazor.Components.Pages
 
         [Inject]
         protected IVehicleAppServices VehicleAppService { get; set; } = null!;
+
+        [Inject]
+        protected IPassengerAppService PassengerAppService { get; set; } = null!;
 
         List<OrderDto> Orders { get; set; } = new();
         Modal DispatchVehicleModal { get; set; } = null!;
@@ -53,7 +57,7 @@ namespace CheMa.Go.Blazor.Components.Pages
                 Sorting = nameof(OrderDto.AppointmentTime) + " desc"
             });
 
-            Orders = result.Items.ToList();
+            Orders = result.Items.Where(x => x.OrderStatus != OrderStatus.Pending).ToList();
         }
 
         private async Task OpenDispatchVehicleModalAsync(OrderDto order)
@@ -95,6 +99,18 @@ namespace CheMa.Go.Blazor.Components.Pages
         private bool DisplayDetailRow(OrderDto order)
         {
             return order.PassengerInfos.Count > 0;
+        }
+
+        private async Task SetPassengerBoardedAsync(PassengerDto passenger)
+        {
+            await PassengerAppService.SetBoardedAsync(passenger.Id);
+            await LoadOrdersAsync();
+        }
+
+        private async Task SetPassengerExitAsync(PassengerDto passenger)
+        {
+            await PassengerAppService.SetPassengerExitAsync(passenger.Id);
+            await LoadOrdersAsync();
         }
     }
 }

@@ -33,4 +33,6 @@ public class CreatePassengerInput
     /// 备注
     /// </summary>
     public string Remark { get; set; } = string.Empty;
+
+    public LocationInfoDto Location { get; set; } = new();
 }

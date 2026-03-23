@@ -118,6 +118,20 @@
                     </DisplayTemplate>
                 </DataGridColumn>
                 <DataGridColumn TItem="PassengerDto"
+                                Field="Location.Name"
+                                Caption="@L["LocationInfoDto:Name"]">
+                    <DisplayTemplate>
+                        @context.Location.Name
+                    </DisplayTemplate>
+                </DataGridColumn>
+                <DataGridColumn TItem="PassengerDto"
+                                Field="Location.Address"
+                                Caption="@L["LocationInfoDto:Address"]">
+                    <DisplayTemplate>
+                        @context.Location.Address
+                    </DisplayTemplate>
+                </DataGridColumn>
+                <DataGridColumn TItem="PassengerDto"
                                 Field="@nameof(PassengerDto.Remark)"
                                 Caption="@L["PassengerDto:Remark"]">
                 </DataGridColumn>

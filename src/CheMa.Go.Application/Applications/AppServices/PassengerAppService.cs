@@ -1,5 +1,6 @@
 using CheMa.Go.Applications.Dtos;
 using CheMa.Go.Domain.Entities;
+using CheMa.Go.Domain.Enums;
 using System.Linq;
 using System.Threading.Tasks;
 using Volo.Abp.Application.Services;
@@ -13,6 +14,20 @@ namespace CheMa.Go.Applications.AppServices
     {
         public PassengerAppService(IRepository<Passenger, long> repository) : base(repository)
         {
+        }
+
+        public async Task SetBoardedAsync(long id)
+        {
+            var passenger = await Repository.GetAsync(id);
+            passenger.Status = PassengerStatus.Boarded;
+            await Repository.UpdateAsync(passenger, autoSave: true);
+        }
+
+        public async Task SetPassengerExitAsync(long id)
+        {
+            var passenger = await Repository.GetAsync(id);
+            passenger.Status = PassengerStatus.Completed;
+            await Repository.UpdateAsync(passenger, autoSave: true);
         }
 
         protected override async Task<IQueryable<Passenger>> CreateFilteredQueryAsync(GetListPassengerInput input)

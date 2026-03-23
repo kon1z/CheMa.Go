@@ -1,9 +1,8 @@
 @page "/driver-home"
-@inherits GoComponentBase
-@using CheMa.Go.Applications.AppServices
+@inherits AbpCrudPageBase<IOrderAppService, OrderDto, long, GetListOrderInput, CreateOrderInput, UpdateOrderInput>
 @using CheMa.Go.Applications.Dtos
 @using CheMa.Go.Domain.Enums
-@using CheMa.Go.Localization
+@using CheMa.Go.Applications.AppServices
 @using Volo.Abp.AspNetCore.Components.Web.Theming.Layout
 @inject PageLayout PageLayout
 
@@ -18,21 +17,23 @@
     </CardHeader>
     <CardBody>
         <DataGrid TItem="OrderDto"
-                  Data="Orders"
+                  Data="Entities"
+                  ReadData="OnDataGridReadAsync"
+                  TotalItems="TotalCount"
+                  ShowPager="true"
+                  PageSize="PageSize"
                   DetailRowTrigger="@(e => e.DetailRowTriggerType == DetailRowTriggerType.RowClick && DisplayDetailRow(e.Item))"
                   DetailRowStartsVisible="false"
-                  ShowPager="true"
-                  PageSize="10"
                   Responsive>
             <DataGridColumns>
-                <DataGridColumn TItem="OrderDto" Field="@nameof(OrderDto.Id)" Caption="@L["Actions"]">
+                <DataGridEntityActionsColumn TItem="OrderDto" @ref="@EntityActionsColumn">
                     <DisplayTemplate>
-                        <Button Color="Color.Primary" Size="Size.Small" Clicked="() => OpenDispatchVehicleModalAsync(context)">
-                            @L["DispatchVehicle"]
-                        </Button>
+                        <EntityActions TItem="OrderDto" EntityActionsColumn="@EntityActionsColumn">
+                            <EntityAction TItem="OrderDto" Text="@L["DispatchVehicle"]" Clicked="() => OpenDispatchVehicleModalAsync(context)"></EntityAction>
+                        </EntityActions>
                     </DisplayTemplate>
-                </DataGridColumn>
-                <DataGridColumn TItem="OrderDto" Field="@nameof(OrderDto.Id)" Caption="@L["OrderDto:Id"]" />
+                </DataGridEntityActionsColumn>
+                <DataGridColumn TItem="OrderDto" Field="@nameof(OrderDto.Id)" Caption="@L["OrderDto:Id"]"/>
                 <DataGridColumn TItem="OrderDto" Field="@nameof(OrderDto.OrderType)" Caption="@L["OrderDto:OrderType"]">
                     <DisplayTemplate>
                         @L[$"Enum:OrderType.{context.OrderType:D}"]
@@ -48,8 +49,19 @@
                         @context.AppointmentTime.ToString("G")
                     </DisplayTemplate>
                 </DataGridColumn>
-                <DataGridColumn TItem="OrderDto" Field="Vehicle.LicenseNum" Caption="@L["VehicleDto:LicenseNum"]" />
-                <DataGridColumn TItem="OrderDto" Field="@nameof(OrderDto.DriverName)" Caption="@L["OrderDto:DriverName"]" />
+                <DataGridColumn TItem="OrderDto" Field="Location.Name" Caption="@L["LocationInfoDto:Name"]">
+                    <DisplayTemplate>
+                        @context.Location.Name
+                    </DisplayTemplate>
+                </DataGridColumn>
+                <DataGridColumn TItem="OrderDto" Field="Location.Address" Caption="@L["LocationInfoDto:Address"]">
+                    <DisplayTemplate>
+                        @context.Location.Address
+                    </DisplayTemplate>
+                </DataGridColumn>
+                <DataGridColumn TItem="OrderDto" Field="Vehicle.LicenseNum" Caption="@L["VehicleDto:LicenseNum"]"/>
+                <DataGridColumn TItem="OrderDto" Field="@nameof(OrderDto.DriverName)" Caption="@L["OrderDto:DriverName"]"/>
+                <DataGridColumn TItem="OrderDto" Field="@nameof(OrderDto.DispatchedPassengerCount)" Caption="@L["OrderDto:DispatchedPassengerCount"]"/>
             </DataGridColumns>
             <DetailRowTemplate>
                 <DataGrid TItem="PassengerDto"
@@ -57,17 +69,48 @@
                           Sortable="false"
                           ShowCaptions="true"
                           Responsive>
+                    <DataGridColumn TItem="PassengerDto" Field="@nameof(PassengerDto.Id)" Caption="@L["Actions"]">
+                        <DisplayTemplate Context="passenger">
+                            @if (passenger.Status != PassengerStatus.Boarded)
+                            {
+                                <Button Color="Color.Primary" Size="Size.Small" Clicked="() => SetPassengerBoardedAsync(passenger)">
+                                    @L["Passenger:Boarded"]
+                                </Button>
+                            }
+                            @if (passenger.Status == PassengerStatus.Boarded)
+                            {
+                                <Button Color="Color.Primary" Size="Size.Small" Clicked="() => SetPassengerExitAsync(passenger)">
+                                    @L["Passenger:Exit"]
+                                </Button>
+                            }
+                        </DisplayTemplate>
+                    </DataGridColumn>
                     <DataGridColumn TItem="PassengerDto" Field="Hotel.Name" Caption="@L["HotelDto:Name"]">
                         <DisplayTemplate Context="passenger">
                             @passenger.Hotel?.Name
                         </DisplayTemplate>
                     </DataGridColumn>
                     <DataGridColumn TItem="PassengerDto" Field="@nameof(PassengerDto.Name)" Caption="@L["PassengerDto:Name"]" />
+                    <DataGridColumn TItem="PassengerDto" Field="@nameof(PassengerDto.Status)" Caption="@L["PassengerDto:Status"]">
+                        <DisplayTemplate Context="passenger">
+                            @L[$"Enum:PassengerStatus.{passenger.Status:D}"]
+                        </DisplayTemplate>
+                    </DataGridColumn>
                     <DataGridColumn TItem="PassengerDto" Field="@nameof(PassengerDto.Phone)" Caption="@L["PassengerDto:Phone"]" />
                     <DataGridColumn TItem="PassengerDto" Field="@nameof(PassengerDto.Count)" Caption="@L["PassengerDto:Count"]" />
                     <DataGridColumn TItem="PassengerDto" Field="@nameof(PassengerDto.AppointmentTime)" Caption="@L["PassengerDto:AppointmentTime"]">
                         <DisplayTemplate Context="passenger">
                             @passenger.AppointmentTime.ToString("G")
+                        </DisplayTemplate>
+                    </DataGridColumn>
+                    <DataGridColumn TItem="PassengerDto" Field="Location.Name" Caption="@L["LocationInfoDto:Name"]">
+                        <DisplayTemplate Context="passenger">
+                            @passenger.Location.Name
+                        </DisplayTemplate>
+                    </DataGridColumn>
+                    <DataGridColumn TItem="PassengerDto" Field="Location.Address" Caption="@L["LocationInfoDto:Address"]">
+                        <DisplayTemplate Context="passenger">
+                            @passenger.Location.Address
                         </DisplayTemplate>
                     </DataGridColumn>
                     <DataGridColumn TItem="PassengerDto" Field="@nameof(PassengerDto.Remark)" Caption="@L["PassengerDto:Remark"]" />

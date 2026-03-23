@@ -1,6 +1,7 @@
 ﻿using CheMa.Go.Domain.Enums;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Identity;
 
@@ -29,9 +30,16 @@ public class OrderDto : EntityDto<long>
     public List<PassengerDto> PassengerInfos { get; set; } = new();
 
     /// <summary>
+    /// 已排乘客数量
+    /// </summary>
+    public string DispatchedPassengerCount => PassengerInfos.Sum(x => x.Count) + (Vehicle == null ? "" : $"/{Vehicle.SeatCount}");
+
+    /// <summary>
     /// 预约时间
     /// </summary>
     public DateTime AppointmentTime { get; set; }
+
+    public LocationInfoDto Location { get; set; } = new();
 
     /// <summary>
     /// 接送机车辆

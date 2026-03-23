@@ -11,8 +11,11 @@ public class GoPermissionDefinitionProvider : PermissionDefinitionProvider
     {
         var myGroup = context.AddGroup(GoPermissions.GroupName);
 
-        //Define your own permissions here. Example:
-        //myGroup.AddPermission(GoPermissions.MyPermission1, L("Permission:MyPermission1"));
+        var orderPermission = myGroup.AddPermission(GoPermissions.Orders.Default, L("Permission:Orders"));
+        orderPermission.AddChild(GoPermissions.Orders.ConfirmDispatch, L("Permission:Orders.ConfirmDispatch"));
+        orderPermission.AddChild(GoPermissions.Orders.ForceTransfer, L("Permission:Orders.ForceTransfer"));
+
+        myGroup.AddPermission(GoPermissions.DispatchLogs.Default, L("Permission:DispatchLogs"));
     }
 
     private static LocalizableString L(string name)

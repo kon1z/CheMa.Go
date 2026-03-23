@@ -45,6 +45,13 @@ public static class AppDbContextModelCreatingExtensions
             b.Property(x => x.Phone).IsRequired().HasMaxLength(15);
             b.Property(x => x.Remark).IsRequired().HasMaxLength(255);
 
+            b.OwnsOne(x => x.Location, location =>
+            {
+                location.Property(x => x.Name).HasColumnName(nameof(Passenger.Location) + nameof(LocationInfo.Name)).HasMaxLength(100);
+                location.Property(x => x.Address).HasColumnName(nameof(Passenger.Location) + nameof(LocationInfo.Address)).HasMaxLength(255);
+                location.Property(x => x.Detail).HasColumnName(nameof(Passenger.Location) + nameof(LocationInfo.Detail)).HasMaxLength(255);
+            });
+
             b.HasOne(x => x.Hotel).WithMany(x => x.Passengers).HasForeignKey(x => x.HotelId);
 
             b.ApplyObjectExtensionMappings();
@@ -55,6 +62,13 @@ public static class AppDbContextModelCreatingExtensions
             b.ToTable(GoConsts.DbTablePrefix + "Orders", GoConsts.DbSchema);
 
             b.ConfigureByConvention();
+
+            b.OwnsOne(x => x.Location, location =>
+            {
+                location.Property(x => x.Name).HasColumnName(nameof(Order.Location) + nameof(LocationInfo.Name)).HasMaxLength(100);
+                location.Property(x => x.Address).HasColumnName(nameof(Order.Location) + nameof(LocationInfo.Address)).HasMaxLength(255);
+                location.Property(x => x.Detail).HasColumnName(nameof(Order.Location) + nameof(LocationInfo.Detail)).HasMaxLength(255);
+            });
 
             b.HasOne(x => x.Vehicle).WithMany().HasForeignKey(x => x.VehicleId);
             b.HasOne(x => x.Driver).WithMany().HasForeignKey(x => x.DriverId);

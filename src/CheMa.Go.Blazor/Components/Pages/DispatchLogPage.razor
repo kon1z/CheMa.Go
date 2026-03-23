@@ -1,0 +1,30 @@
+@page "/dispatch-logs"
+@using Blazorise
+@using CheMa.Go.Applications.Dtos
+@using Volo.Abp.AspNetCore.Components.Web.Theming.Layout
+@inject PageLayout PageLayout
+
+@{
+    PageLayout.Title = "转派日志";
+    PageLayout.ShowToolbar = false;
+}
+
+<Card>
+    <CardHeader>
+        <h2>转派日志</h2>
+    </CardHeader>
+    <CardBody>
+        <DataGrid TItem="DispatchLogDto" Data="Logs" ReadData="OnDataGridReadAsync" TotalItems="TotalCount" ShowPager="true" PageSize="PageSize" Responsive>
+            <DataGridColumns>
+                <DataGridColumn TItem="DispatchLogDto" Field="@nameof(DispatchLogDto.CreationTime)" Caption="转派时间">
+                    <DisplayTemplate>@context.CreationTime.ToString("G")</DisplayTemplate>
+                </DataGridColumn>
+                <DataGridColumn TItem="DispatchLogDto" Field="@nameof(DispatchLogDto.PassengerName)" Caption="乘客" />
+                <DataGridColumn TItem="DispatchLogDto" Field="@nameof(DispatchLogDto.SourceOrderId)" Caption="原订单" />
+                <DataGridColumn TItem="DispatchLogDto" Field="@nameof(DispatchLogDto.TargetOrderId)" Caption="目标订单" />
+                <DataGridColumn TItem="DispatchLogDto" Field="@nameof(DispatchLogDto.OperatorName)" Caption="操作人" />
+                <DataGridColumn TItem="DispatchLogDto" Field="@nameof(DispatchLogDto.Reason)" Caption="原因" />
+            </DataGridColumns>
+        </DataGrid>
+    </CardBody>
+</Card>

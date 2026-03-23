@@ -17,4 +17,6 @@ public class UpdateOrderInput
     /// 预约时间
     /// </summary>
     public DateTime AppointmentTime { get; set; }
+
+    public LocationInfoDto Location { get; set; } = new();
 }

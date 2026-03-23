@@ -9,4 +9,5 @@ public class GoMenus
     public const string Vehicles = Prefix + ".Vehicles";
     public const string Passengers = Prefix + ".Passengers";
     public const string Hotels = Prefix + ".Hotels";
+    public const string DispatchLogs = Prefix + ".DispatchLogs";
 }

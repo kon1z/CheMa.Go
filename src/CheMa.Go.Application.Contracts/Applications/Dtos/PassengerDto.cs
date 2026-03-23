@@ -7,42 +7,44 @@ namespace CheMa.Go.Applications.Dtos
     public class PassengerDto : EntityDto<long>
     {
         /// <summary>
-        /// ³Ë¿Í½ÓËÍ×´Ì¬
+        /// ï¿½Ë¿Í½ï¿½ï¿½ï¿½×´Ì¬
         /// </summary>
         public PassengerStatus Status { get; set; }
         /// <summary>
-        /// ³Ë¿Í³Æºô
+        /// ï¿½Ë¿Í³Æºï¿½
         /// </summary>
         public string Name { get; set; } = null!;
         /// <summary>
-        /// ³Ë¿ÍÁªÏµ·½Ê½
+        /// ï¿½Ë¿ï¿½ï¿½ï¿½Ïµï¿½ï¿½Ê½
         /// </summary>
         public string Phone { get; set; } = null!;
         /// <summary>
-        /// ³Ë¿ÍÊýÁ¿
+        /// ï¿½Ë¿ï¿½ï¿½ï¿½ï¿½ï¿½
         /// </summary>
         public int Count { get; set; }
         /// <summary>
-        /// Ô¤Ô¼Ê±¼ä
+        /// Ô¤Ô¼Ê±ï¿½ï¿½
         /// </summary>
         public DateTime AppointmentTime { get; set; }
         /// <summary>
-        /// ¹ØÁª¶©µ¥Id
+        /// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Id
         /// </summary>
         public long? OrderId { get; set; }
         /// <summary>
-        /// ËùÊô¾ÆµêId
+        /// ï¿½ï¿½ï¿½ï¿½ï¿½Æµï¿½Id
         /// </summary>
         public long HotelId { get; set; }
 
         /// <summary>
-        /// ËùÊô¾Æµê
+        /// ï¿½ï¿½ï¿½ï¿½ï¿½Æµï¿½
         /// </summary>
         public HotelDto? Hotel { get; set; }
         /// <summary>
-        /// ±¸×¢
+        /// ï¿½ï¿½×¢
         /// </summary>
         public string Remark { get; set; } = string.Empty;
+
+        public LocationInfoDto Location { get; set; } = new();
     }
 }
 

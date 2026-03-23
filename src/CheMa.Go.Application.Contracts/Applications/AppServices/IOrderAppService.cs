@@ -12,5 +12,11 @@ public interface IOrderAppService : ICrudAppService<OrderDto, long, GetListOrder
 
     Task LinkDriverToOrderAsync(LinkDriverToOrderInput input);
 
+    Task<DispatchConflictCheckResultDto> CheckDispatchConflictsAsync(long orderId);
+
+    Task ConfirmDispatchAsync(long orderId);
+
+    Task ForceTransferPassengersAsync(ForceTransferPassengerInput input);
+
     Task RemovePassengerFromOrderAsync(long orderId, long passengerId);
 }

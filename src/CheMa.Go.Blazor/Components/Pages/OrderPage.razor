@@ -7,7 +7,6 @@
 @using Volo.Abp.AspNetCore.Components.Web
 @using Volo.Abp.AspNetCore.Components.Web.Theming.Layout
 @inject PageLayout PageLayout
-@inject AbpBlazorMessageLocalizerHelper<GoResource> Lh
 @{
     PageLayout.Title = L["Menu:Home"];
     PageLayout.ShowToolbar = false;
@@ -41,15 +40,14 @@
             </Field>
             <Field>
                 <FieldLabel>@L["OrderDto:OrderStatus"]</FieldLabel>
-                <Select TValue="OrderStatus ?" @bind-SelectedValue="GetListInput.OrderStatus">
-                    <SelectItem TValue="OrderStatus?" Value="@((OrderStatus?)null)">--</SelectItem>
+                <select class="form-select" multiple size="5" @onchange="OnOrderStatusSelectionChanged">
                     @foreach (int orderStatus in Enum.GetValues(typeof(OrderStatus)))
                     {
-                        <SelectItem TValue="OrderStatus?" Value="@((OrderStatus)orderStatus)">
+                        <option value="@orderStatus" selected="@IsOrderStatusSelected((OrderStatus)orderStatus)">
                             @L[$"Enum:OrderStatus.{orderStatus}"]
-                        </SelectItem>
+                        </option>
                     }
-                </Select>
+                </select>
             </Field>
             <Field>
                 <FieldLabel>@L["OrderDto:AppointmentTime"]</FieldLabel>
@@ -96,18 +94,24 @@
                 <DataGridEntityActionsColumn TItem="OrderDto" @ref="@EntityActionsColumn">
                     <DisplayTemplate>
                         <EntityActions TItem="OrderDto" EntityActionsColumn="@EntityActionsColumn">
-                            <EntityAction TItem="OrderDto"
-                                          Text="@L["Edit"]"
-                                          Clicked="() => OpenEditModalAsync(context)" />
-                            <EntityAction TItem="OrderDto"
-                                          Text="@L["DispatchVehicle"]"
-                                          Clicked="() => OpenDispatchVehicleModalAsync(context)" />
-                            <EntityAction TItem="OrderDto"
-                                          Text="@L["DispatchDriver"]"
-                                          Clicked="() => OpenDispatchDriverModalAsync(context)" />
-                            <EntityAction TItem="OrderDto"
-                                          Text="@L["AddPassenger"]"
-                                          Clicked="() => OpenAddPassengerModalAsync(context)" />
+                            @if (IsPendingOrder(context))
+                            {
+                                <EntityAction TItem="OrderDto"
+                                              Text="@L["Edit"]"
+                                              Clicked="() => OpenEditModalAsync(context)" />
+                                <EntityAction TItem="OrderDto"
+                                              Text="@L["DispatchVehicle"]"
+                                              Clicked="() => OpenDispatchVehicleModalAsync(context)" />
+                                <EntityAction TItem="OrderDto"
+                                              Text="@L["DispatchDriver"]"
+                                              Clicked="() => OpenDispatchDriverModalAsync(context)" />
+                                <EntityAction TItem="OrderDto"
+                                              Text="@L["AddPassenger"]"
+                                              Clicked="() => OpenAddPassengerModalAsync(context)" />
+                                <EntityAction TItem="OrderDto"
+                                              Text="@L["Order:ConfirmDispatch"]"
+                                              Clicked="() => ConfirmDispatchAsync(context)" />
+                            }
                             <EntityAction TItem="OrderDto"
                                           Text="@L["Delete"]"
                                           Clicked="() => DeleteEntityAsync(context)"
@@ -153,8 +157,8 @@
                                 Caption="@L["VehicleDto:Name"]">
                 </DataGridColumn>
                 <DataGridColumn TItem="OrderDto"
-                                Field="Vehicle.SeatCount"
-                                Caption="@L["VehicleDto:SeatCount"]">
+                                Field="@nameof(OrderDto.DispatchedPassengerCount)"
+                                Caption="@L["OrderDto:DispatchedPassengerCount"]">
                 </DataGridColumn>
             </DataGridColumns>
             <DetailRowTemplate>

@@ -4,8 +4,15 @@ public static class GoPermissions
 {
     public const string GroupName = "Go";
 
+    public static class Orders
+    {
+        public const string Default = GroupName + ".Orders";
+        public const string ConfirmDispatch = Default + ".ConfirmDispatch";
+        public const string ForceTransfer = Default + ".ForceTransfer";
+    }
 
-    
-    //Add your own permission names. Example:
-    //public const string MyPermission1 = GroupName + ".MyPermission1";
+    public static class DispatchLogs
+    {
+        public const string Default = GroupName + ".DispatchLogs";
+    }
 }

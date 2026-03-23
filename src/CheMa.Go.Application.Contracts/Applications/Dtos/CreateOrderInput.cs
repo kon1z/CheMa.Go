@@ -18,4 +18,6 @@ public class CreateOrderInput
     /// 预约时间
     /// </summary>
     public DateTime AppointmentTime { get; set; } = DateTime.Today;
+
+    public LocationInfoDto Location { get; set; } = new();
 }

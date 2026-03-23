@@ -71,6 +71,32 @@ namespace CheMa.Go.Blazor.Components.Pages
             await SearchEntitiesAsync();
         }
 
+        private bool IsOrderStatusSelected(OrderStatus status)
+        {
+            return GetListInput.OrderStatus?.Contains(status) == true;
+        }
+
+        private void OnOrderStatusSelectionChanged(ChangeEventArgs args)
+        {
+            var selectedValues = args.Value switch
+            {
+                string[] values => values,
+                string value => new[] { value },
+                _ => Array.Empty<string>()
+            };
+
+            var selectedStatuses = selectedValues
+                .Where(x => int.TryParse(x, out _))
+                .Select(int.Parse)
+                .Select(x => (OrderStatus)x)
+                .Distinct()
+                .ToList();
+
+            GetListInput.OrderStatus = selectedStatuses.Count == 0
+                ? null
+                : selectedStatuses;
+        }
+
         private async Task ClearOrderSearchAsync()
         {
             GetListInput.OrderId = null;
@@ -85,6 +111,11 @@ namespace CheMa.Go.Blazor.Components.Pages
         private bool DisplayDetailRow(OrderDto argItem)
         {
             return argItem.PassengerInfos.Count > 0;
+        }
+
+        private static bool IsPendingOrder(OrderDto order)
+        {
+            return order.OrderStatus == OrderStatus.Pending;
         }
 
         private async Task RemovePassengerFromOrderAsync(PassengerDto passenger, OrderDto order)
@@ -219,6 +250,13 @@ namespace CheMa.Go.Blazor.Components.Pages
             });
 
             await DispatchDriverModal.Hide();
+            await SearchEntitiesAsync();
+        }
+
+        private async Task ConfirmDispatchAsync(OrderDto order)
+        {
+            await AppService.ConfirmDispatchAsync(order.Id);
+            order.OrderStatus = OrderStatus.Dispatched;
             await SearchEntitiesAsync();
         }
     }

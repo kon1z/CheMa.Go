@@ -23,5 +23,6 @@ namespace CheMa.Go.EntityFrameworkCore
         public DbSet<Order> Orders { get; set; }
         public DbSet<Vehicle> Vehicles { get; set; }
         public DbSet<Passenger> Passengers { get; set; }
+        public DbSet<DispatchLog> DispatchLogs { get; set; }
     }
 }

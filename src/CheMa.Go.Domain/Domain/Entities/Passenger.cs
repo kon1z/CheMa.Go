@@ -33,6 +33,11 @@ public class Passenger : AggregateRoot<long>
     public string Remark { get; set; } = string.Empty;
 
     /// <summary>
+    /// 乘客地点信息
+    /// </summary>
+    public LocationInfo Location { get; set; } = new();
+
+    /// <summary>
     /// 所属订单Id
     /// </summary>
     public long? OrderId { get; set; }
